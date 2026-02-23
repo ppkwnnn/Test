@@ -3,266 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy Barista Birthday</title>
+    <title>Cozy Cafe - Visual Novel</title>
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #FDF5E6; /* Old Lace */
-            --primary-brown: #8D6E63;
-            --soft-beige: #F5F5DC;
-            --accent-wood: #A1887F;
-            --text-dark: #4E342E;
+            --cream: #FFF8E7;
+            --beige: #F5F5DC;
+            --soft-brown: #C4A484;
+            --deep-brown: #5D4037;
+            --text-color: #4E342E;
         }
 
         body, html {
             margin: 0;
             padding: 0;
+            width: 100%;
             height: 100%;
             font-family: 'Mali', cursive;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
+            background-color: var(--beige);
+            color: var(--text-color);
             overflow: hidden;
         }
 
-        /* พื้นหลังคาเฟ่ */
-        .game-container {
+        /* พื้นหลังหลัก */
+        #game-container {
             position: relative;
             width: 100%;
-            max-width: 800px;
             height: 100vh;
-            margin: 0 auto;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
-                        url('https://images.unsplash.com/photo-1509042239264-ed8b0c2a30ad?auto=format&fit=crop&w=800&q=80');
             background-size: cover;
             background-position: center;
+            transition: background 1s ease-in-out;
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: flex-end;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
         }
 
         /* ตัวละคร */
-        .character-sprite {
-            position: absolute;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 280px;
-            transition: opacity 0.5s ease;
+        #character-sprite {
+            height: 80vh;
+            display: none;
+            z-index: 1;
+            transition: opacity 0.5s;
+        }
+
+        /* กล่องข้อความแนว Visual Novel */
+        #dialogue-box {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            background: rgba(255, 248, 231, 0.9);
+            border: 4px solid var(--soft-brown);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            z-index: 2;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             display: none;
         }
 
-        /* กล่องข้อความ */
-        .dialogue-box {
-            background: rgba(255, 251, 240, 0.9);
-            border: 4px solid var(--accent-wood);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 20px;
-            height: 150px;
-            z-index: 10;
-            position: relative;
-        }
-
-        .speaker-name {
+        #name-tag {
             position: absolute;
-            top: -20px;
-            left: 30px;
-            background: var(--primary-brown);
+            top: -25px;
+            left: 20px;
+            background: var(--soft-brown);
             color: white;
             padding: 5px 20px;
             border-radius: 10px;
             font-weight: bold;
         }
 
-        /* ปุ่มเลือกตัวเลือก */
+        #message {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* ปุ่มตัวเลือก */
         .choices-container {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 0 40px;
+            gap: 15px;
+            margin-top: 15px;
         }
 
         button {
-            background-image: url('https://otomeology.b-cdn.net/wp-content/uploads/2023/01/Jude-copy-e1673828332892.png');
-            background-size: cover;
-            background-position: center;
-            background-color: var(--soft-beige);
-            border: 2px solid var(--primary-brown);
-            padding: 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-family: 'Mali', cursive;
-            font-size: 1.1rem;
-            transition: all 0.3s;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            background-color: var(--soft-brown);
             color: white;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            font-family: 'Itim', cursive;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
         }
 
         button:hover {
-            background-color: var(--primary-brown);
-            color: white;
+            background-color: var(--deep-brown);
+            transform: scale(1.05);
         }
 
-        /* หน้าฟอร์ม/หน้ารวมคำอวยพร */
-        .overlay-screen {
+        /* หน้าฟอร์มเขียนคำอวยพร */
+        #wish-form {
             display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            z-index: 100;
-            overflow-y: auto;
-            padding: 40px 20px;
-            box-sizing: border-box;
-        }
-
-        .wish-card {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
         }
 
         input, textarea {
-            width: 100%;
             padding: 10px;
-            margin: 10px 0;
             border-radius: 10px;
-            border: 1px solid var(--accent-wood);
+            border: 2px solid var(--soft-brown);
             font-family: 'Mali', cursive;
+        }
+
+        /* หน้าเริ่มต้น (ประตู) */
+        #door-screen {
+            position: absolute;
+            inset: 0;
+            background-color: var(--cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <img id="barista" class="character-sprite" src=https://otomeology.b-cdn.net/wp-content/uploads/2023/01/Jude-copy-e1673828332892.png alt="Barista">
-
-    <div id="choices" class="choices-container"></div>
-
-    <div class="dialogue-box">
-        <div id="speaker" class="speaker-name">???</div>
-        <div id="text-content">คุณยืนอยู่หน้าประตูร้านกาแฟที่มีกลิ่นหอมกรุ่น...</div>
-    </div>
-</div>
-
-<div id="wish-form" class="overlay-screen">
-    <h2>☕ เขียนคำอวยพรวันเกิด</h2>
-    <input type="text" id="user-name" placeholder="ชื่อของคุณ">
-    <textarea id="user-wish" rows="4" placeholder="เขียนคำอวยพรที่นี่..."></textarea>
-    <button onclick="saveWish()">ส่งคำอวยพร</button>
-</div>
-
-<div id="wish-list-screen" class="overlay-screen">
-    <h2>📔 สมุดบันทึกคำอวยพร</h2>
-    <div id="wishes-container"></div>
-    <button onclick="location.reload()">กลับไปหน้าแรก</button>
-</div>
-
-<script>
-    const textContent = document.getElementById('text-content');
-    const speaker = document.getElementById('speaker');
-    const choicesContainer = document.getElementById('choices');
-    const baristaImg = document.getElementById('barista');
-
-    // ลำดับเหตุการณ์
-    function startScene() {
-        showChoices([
-            { text: "เปิดประตูเข้าไป", action: enterCafe },
-            { text: "เดินผ่านไป", action: skipCafe }
-        ]);
-    }
-
-    function skipCafe() {
-        speaker.innerText = "ระบบ";
-        textContent.innerText = "ขอบคุณที่แวะมามองดูร้านของเรา ขอให้เป็นวันที่ดีนะ!";
-        choicesContainer.innerHTML = "";
-    }
-
-    function enterCafe() {
-        baristaImg.style.display = "block";
-        speaker.innerText = "บาริสต้า";
-        textContent.innerText = "ยินดีต้อนรับครับ! วันนี้อากาศข้างนอกเป็นยังไงบ้าง? เชิญหาที่นั่งก่อนได้เลยครับ";
-        showChoices([
-            { text: "สั่งเครื่องดื่ม", action: orderDrink }
-        ]);
-    }
-
-    function orderDrink() {
-        textContent.innerText = "วันนี้คุณอยากดื่มอะไรดีครับ? ผมแนะนำลาเต้ร้อนๆ นะ";
-        showChoices([
-            { text: "คาปูชิโน่", action: serveDrink },
-            { text: "อเมริกาโน่", action: serveDrink },
-            { text: "ช็อกโกแลตร้อน", action: serveDrink }
-        ]);
-    }
-
-    function serveDrink() {
-        textContent.innerText = "นี่ครับเครื่องดื่มของคุณ... อ้อ! วันนี้ไม่ต้องจ่ายเงินหรอกครับ เพราะวันนี้เป็นวันเกิดของผม ผมอยากแบ่งปันความสุขให้ลูกค้าครับ";
-        showChoices([
-            { text: "อวยพรวันเกิดเขา", action: openWishForm },
-            { text: "ขอบคุณและยิ้มให้", action: endSimple }
-        ]);
-    }
-
-    function openWishForm() {
-        document.getElementById('wish-form').style.display = "block";
-    }
-
-    function saveWish() {
-        const name = document.getElementById('user-name').value;
-        const wish = document.getElementById('user-wish').value;
-        
-        if(!name || !wish) return alert("กรุณาใส่ชื่อและคำอวยพรด้วยนะ");
-
-        let wishes = JSON.parse(localStorage.getItem('cafe_wishes') || '[]');
-        wishes.push({ name, wish, date: new Date().toLocaleDateString() });
-        localStorage.setItem('cafe_wishes', JSON.stringify(wishes));
-
-        document.getElementById('wish-form').style.display = "none";
-        speaker.innerText = "บาริสต้า";
-        textContent.innerText = "ขอบคุณมากนะครับสำหรับคำอวยพร มันมีความหมายกับผมมากจริงๆ!";
-        showChoices([
-            { text: "ดูคำอวยพรทั้งหมด", action: showAllWishes }
-        ]);
-    }
-
-    function showAllWishes() {
-        const container = document.getElementById('wishes-container');
-        const wishes = JSON.parse(localStorage.getItem('cafe_wishes') || '[]');
-        container.innerHTML = wishes.map(w => `
-            <div class="wish-card">
-                <strong>${w.name}</strong> <small>${w.date}</small><br>
-                <p>${w.wish}</p>
+    <div id="game-container">
+        <div id="door-screen">
+            <h1 style="color: var(--deep-brown);">ยินดีต้อนรับสู่ Cozy Corner</h1>
+            <p>คุณยืนอยู่หน้าประตูร้านกาแฟไม้สีอุ่น...</p>
+            <div class="choices-container">
+                <button onclick="startGame()">เปิดประตูเข้าไป</button>
+                <button onclick="exitGame()">ไม่เปิดดีกว่า</button>
             </div>
-        `).join('');
-        document.getElementById('wish-list-screen').style.display = "block";
-    }
+        </div>
 
-    function endSimple() {
-        textContent.innerText = "ขอบคุณที่แวะมานะครับ ขอให้มีความสุขในวันนี้นะ!";
-        choicesContainer.innerHTML = "";
-    }
+        <img id="character-sprite" src="https://via.placeholder.com/400x800?text=Barista" alt="Barista">
 
-    function showChoices(choices) {
-        choicesContainer.innerHTML = "";
-        choices.forEach(c => {
-            const btn = document.createElement('button');
-            btn.innerText = c.text;
-            btn.onclick = c.action;
-            choicesContainer.appendChild(btn);
-        });
-    }
+        <div id="dialogue-box">
+            <div id="name-tag">บาริสต้า</div>
+            <div id="message"></div>
+            <div id="choices" class="choices-container"></div>
+            
+            <div id="wish-form">
+                <input type="text" id="player-name" placeholder="ชื่อของคุณ">
+                <textarea id="wish-text" placeholder="เขียนคำอวยพรที่นี่..."></textarea>
+                <button onclick="submitWish()">ส่งคำอวยพร</button>
+            </div>
+        </div>
+    </div>
 
-    // เริ่มเกม
-    startScene();
-</script>
+    <script>
+        const gameContainer = document.getElementById('game-container');
+        const doorScreen = document.getElementById('door-screen');
+        const dialogueBox = document.getElementById('dialogue-box');
+        const messageEl = document.getElementById('message');
+        const choicesEl = document.getElementById('choices');
+        const character = document.getElementById('character-sprite');
+        const wishForm = document.getElementById('wish-form');
 
+        // ข้อมูลภาพประกอบ (แทนที่ URL ด้วยภาพจริงของคุณ)
+        const IMAGES = {
+            cafe: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1000', // รูปคาเฟ่
+            barista: 'https://otomeology.b-cdn.net/wp-content/uploads/2023/01/Jude-copy-e1673828332892.png' // ใส่รูปบาริสต้าของคุณที่นี่
+        };
+
+        function startGame() {
+            doorScreen.style.display = 'none';
+            gameContainer.style.backgroundImage = `url('${IMAGES.cafe}')`;
+            character.style.display = 'block';
+            dialogueBox.style.display = 'block';
+            
+            updateDialogue("ยินดีต้อนรับครับ! วันนี้อากาศดีจังเลยนะ รับเครื่องดื่มอะไรดีครับ?", [
+                { text: "คาปูชิโน่ร้อน", action: () => serveDrink("คาปูชิโน่") },
+                { text: "ลาเต้อาร์ตหวานน้อย", action: () => serveDrink("ลาเต้") }
+            ]);
+        }
+
+        function exitGame() {
+            doorScreen.innerHTML = "<h1>ขอบคุณที่แวะมานะครับ</h1><p>หวังว่าจะได้พบกันใหม่ในวันที่คุณต้องการความอบอุ่น</p>";
+        }
+
+        function updateDialogue(text, options) {
+            messageEl.innerText = text;
+            choicesEl.innerHTML = '';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt.text;
+                btn.onclick = opt.action;
+                choicesEl.appendChild(btn);
+            });
+        }
+
+        function serveDrink(drink) {
+            updateDialogue(`นี่ครับ ${drink} อุ่นๆ สำหรับคุณ... อ้อ! เกือบลืมบอกไปเลย วันนี้เป็นวันเกิดของผมเองครับ มื้อนี้ผมเลี้ยงเองนะ ไม่ต้องจ่ายเงินหรอกครับ`, [
+                { text: "สุขสันต์วันเกิดนะ!", action: () => showWishForm() },
+                { text: "ขอบคุณมากนะ (ยิ้ม)", action: () => endStory() }
+            ]);
+        }
+
+        function showWishForm() {
+            messageEl.innerText = "ขอบคุณมากครับ! ถ้าไม่รังเกียจ ช่วยเขียนคำอวยพรเล็กๆ ลงในสมุดเยี่ยมของร้านได้ไหมครับ?";
+            choicesEl.innerHTML = '';
+            wishForm.style.display = 'flex';
+        }
+
+        function submitWish() {
+            const name = document.getElementById('player-name').value;
+            if(!name) { alert("กรุณาใส่ชื่อด้วยนะ"); return; }
+            
+            wishForm.style.display = 'none';
+            updateDialogue(`ขอบคุณสำหรับคำอวยพรนะครับคุณ ${name} มันมีความหมายกับผมมากจริงๆ ขอให้วันนี้เป็นวันที่ดีของคุณเช่นกันนะครับ`, [
+                { text: "จบการสนทนา", action: () => location.reload() }
+            ]);
+        }
+
+        function endStory() {
+            updateDialogue("แค่เห็นคุณยิ้มได้ ผมก็มีความสุขแล้วครับ ทานให้อร่อยนะ", [
+                { text: "จบการสนทนา", action: () => location.reload() }
+            ]);
+        }
+    </script>
 </body>
 </html>
