@@ -1,8 +1,263 @@
-<html>
-    <head>
-        <title>test 1.0</title>
-    </head>
-    <body>
-        <h1>Hello</h1>
-    </body>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Barista Birthday</title>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FDF5E6; /* Old Lace */
+            --primary-brown: #8D6E63;
+            --soft-beige: #F5F5DC;
+            --accent-wood: #A1887F;
+            --text-dark: #4E342E;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Mali', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        /* พื้นหลังคาเฟ่ */
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 100vh;
+            margin: 0 auto;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1509042239264-ed8b0c2a30ad?auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        /* ตัวละคร */
+        .character-sprite {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            transition: opacity 0.5s ease;
+            display: none;
+        }
+
+        /* กล่องข้อความ */
+        .dialogue-box {
+            background: rgba(255, 251, 240, 0.9);
+            border: 4px solid var(--accent-wood);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px;
+            height: 150px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .speaker-name {
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            background: var(--primary-brown);
+            color: white;
+            padding: 5px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        /* ปุ่มเลือกตัวเลือก */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 0 40px;
+        }
+
+        button {
+            background-color: var(--soft-beige);
+            border: 2px solid var(--primary-brown);
+            padding: 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Mali', cursive;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-brown);
+            color: white;
+        }
+
+        /* หน้าฟอร์ม/หน้ารวมคำอวยพร */
+        .overlay-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            overflow-y: auto;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .wish-card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid var(--accent-wood);
+            font-family: 'Mali', cursive;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <img id="barista" class="character-sprite" src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png" alt="Barista">
+
+    <div id="choices" class="choices-container"></div>
+
+    <div class="dialogue-box">
+        <div id="speaker" class="speaker-name">???</div>
+        <div id="text-content">คุณยืนอยู่หน้าประตูร้านกาแฟที่มีกลิ่นหอมกรุ่น...</div>
+    </div>
+</div>
+
+<div id="wish-form" class="overlay-screen">
+    <h2>☕ เขียนคำอวยพรวันเกิด</h2>
+    <input type="text" id="user-name" placeholder="ชื่อของคุณ">
+    <textarea id="user-wish" rows="4" placeholder="เขียนคำอวยพรที่นี่..."></textarea>
+    <button onclick="saveWish()">ส่งคำอวยพร</button>
+</div>
+
+<div id="wish-list-screen" class="overlay-screen">
+    <h2>📔 สมุดบันทึกคำอวยพร</h2>
+    <div id="wishes-container"></div>
+    <button onclick="location.reload()">กลับไปหน้าแรก</button>
+</div>
+
+<script>
+    const textContent = document.getElementById('text-content');
+    const speaker = document.getElementById('speaker');
+    const choicesContainer = document.getElementById('choices');
+    const baristaImg = document.getElementById('barista');
+
+    // ลำดับเหตุการณ์
+    function startScene() {
+        showChoices([
+            { text: "เปิดประตูเข้าไป", action: enterCafe },
+            { text: "เดินผ่านไป", action: skipCafe }
+        ]);
+    }
+
+    function skipCafe() {
+        speaker.innerText = "ระบบ";
+        textContent.innerText = "ขอบคุณที่แวะมามองดูร้านของเรา ขอให้เป็นวันที่ดีนะ!";
+        choicesContainer.innerHTML = "";
+    }
+
+    function enterCafe() {
+        baristaImg.style.display = "block";
+        speaker.innerText = "บาริสต้า";
+        textContent.innerText = "ยินดีต้อนรับครับ! วันนี้อากาศข้างนอกเป็นยังไงบ้าง? เชิญหาที่นั่งก่อนได้เลยครับ";
+        showChoices([
+            { text: "สั่งเครื่องดื่ม", action: orderDrink }
+        ]);
+    }
+
+    function orderDrink() {
+        textContent.innerText = "วันนี้คุณอยากดื่มอะไรดีครับ? ผมแนะนำลาเต้ร้อนๆ นะ";
+        showChoices([
+            { text: "คาปูชิโน่", action: serveDrink },
+            { text: "อเมริกาโน่", action: serveDrink },
+            { text: "ช็อกโกแลตร้อน", action: serveDrink }
+        ]);
+    }
+
+    function serveDrink() {
+        textContent.innerText = "นี่ครับเครื่องดื่มของคุณ... อ้อ! วันนี้ไม่ต้องจ่ายเงินหรอกครับ เพราะวันนี้เป็นวันเกิดของผม ผมอยากแบ่งปันความสุขให้ลูกค้าครับ";
+        showChoices([
+            { text: "อวยพรวันเกิดเขา", action: openWishForm },
+            { text: "ขอบคุณและยิ้มให้", action: endSimple }
+        ]);
+    }
+
+    function openWishForm() {
+        document.getElementById('wish-form').style.display = "block";
+    }
+
+    function saveWish() {
+        const name = document.getElementById('user-name').value;
+        const wish = document.getElementById('user-wish').value;
+        
+        if(!name || !wish) return alert("กรุณาใส่ชื่อและคำอวยพรด้วยนะ");
+
+        let wishes = JSON.parse(localStorage.getItem('cafe_wishes') || '[]');
+        wishes.push({ name, wish, date: new Date().toLocaleDateString() });
+        localStorage.setItem('cafe_wishes', JSON.stringify(wishes));
+
+        document.getElementById('wish-form').style.display = "none";
+        speaker.innerText = "บาริสต้า";
+        textContent.innerText = "ขอบคุณมากนะครับสำหรับคำอวยพร มันมีความหมายกับผมมากจริงๆ!";
+        showChoices([
+            { text: "ดูคำอวยพรทั้งหมด", action: showAllWishes }
+        ]);
+    }
+
+    function showAllWishes() {
+        const container = document.getElementById('wishes-container');
+        const wishes = JSON.parse(localStorage.getItem('cafe_wishes') || '[]');
+        container.innerHTML = wishes.map(w => `
+            <div class="wish-card">
+                <strong>${w.name}</strong> <small>${w.date}</small><br>
+                <p>${w.wish}</p>
+            </div>
+        `).join('');
+        document.getElementById('wish-list-screen').style.display = "block";
+    }
+
+    function endSimple() {
+        textContent.innerText = "ขอบคุณที่แวะมานะครับ ขอให้มีความสุขในวันนี้นะ!";
+        choicesContainer.innerHTML = "";
+    }
+
+    function showChoices(choices) {
+        choicesContainer.innerHTML = "";
+        choices.forEach(c => {
+            const btn = document.createElement('button');
+            btn.innerText = c.text;
+            btn.onclick = c.action;
+            choicesContainer.appendChild(btn);
+        });
+    }
+
+    // เริ่มเกม
+    startScene();
+</script>
+
+</body>
 </html>
