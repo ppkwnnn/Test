@@ -32,12 +32,12 @@
             transition: 1s ease;
         }
 
-        /* สไตล์กล่องคำพูดตามตัวอย่างรูปภาพ */
+        /* ส่วนประกอบ Dialogue Box */
         .dialogue-container {
             position: absolute;
             bottom: 40px;
             width: 90%;
-            max-width: 800px;
+            max-width: 850px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 50;
@@ -46,68 +46,72 @@
         .name-tag {
             background-color: var(--name-bg);
             color: white;
-            padding: 5px 30px;
-            border-radius: 20px 20px 0 0;
+            padding: 6px 35px;
+            border-radius: 15px 15px 0 0;
             display: inline-block;
-            margin-left: 20px;
-            font-size: 1.1rem;
-            border: 2px solid white;
+            margin-left: 30px;
+            font-size: 1.15rem;
+            border: 3px solid white;
             border-bottom: none;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
         }
 
+        /* กล่องข้อความแบบไม่มีรูปข้างใน */
         .main-box {
-            background: rgba(255, 249, 240, 0.95);
+            background: rgba(255, 249, 240, 0.96);
             border: 4px solid white;
             border-radius: 25px;
-            padding: 25px;
+            padding: 30px 40px; /* เพิ่ม Padding ให้ดูสมดุล */
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            min-height: 160px;
             display: flex;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            min-height: 150px;
-        }
-
-        /* ไอคอนตัวละครข้างในกล่อง (เหมือนรูปกระต่าย) */
-        .side-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--cafe-accent);
-            border-radius: 15px;
-            border: 3px solid white;
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            flex-shrink: 0;
         }
 
         .text-content {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             color: var(--cafe-brown);
-            line-height: 1.6;
-            flex-grow: 1;
+            line-height: 1.8;
         }
 
-        /* ปุ่มตัวเลือกสไตล์มินิมอล */
+        /* สไตล์ปุ่มตัวเลือก */
         .choice-btn {
             background: white;
             border: 2px solid var(--cafe-accent);
-            padding: 12px 25px;
+            padding: 10px 25px;
             border-radius: 50px;
             cursor: pointer;
             transition: 0.3s;
             color: var(--cafe-brown);
             font-weight: 500;
+            margin-top: 10px;
         }
 
         .choice-btn:hover {
             background: var(--cafe-accent);
-            transform: scale(1.05);
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* Animation สำหรับตัวละคร */
         .character-fade {
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            transition: opacity 0.6s ease, transform 0.6s ease;
             max-height: 85vh;
+        }
+
+        /* สไตล์ช่องกรอกชื่อและคำอวยพร */
+        input, textarea {
+            background: #fff;
+            border: 2px solid #EFEBE9;
+            padding: 10px;
+            border-radius: 12px;
+            width: 100%;
+            margin-bottom: 10px;
+            outline: none;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: var(--name-bg);
         }
     </style>
 </head>
@@ -116,30 +120,26 @@
     <div id="bg-overlay" class="cafe-bg"></div>
 
     <div class="absolute bottom-0 flex justify-center w-full">
-        <img id="char-sprite" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&clothing=overall&accessories=blank" 
+        <img id="char-sprite" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&clothing=overall" 
              class="character-fade opacity-0 translate-y-10 z-10" alt="Barista">
     </div>
 
     <div class="dialogue-container">
-        <div id="char-name-box" class="name-tag">???</div>
+        <div id="char-name-box" class="name-tag">ระบบ</div>
         
         <div class="main-box">
-            <div class="side-icon">
-                <span id="mini-icon" style="font-size: 40px;">☕</span>
-            </div>
-
             <div class="text-content">
-                <p id="dialogue-text">คุณยืนอยู่หน้าประตูร้านกาแฟไม้หลังเล็กๆ ที่แสนอบอุ่น...</p>
+                <p id="dialogue-text">คุณยืนอยู่หน้าประตูร้านกาแฟไม้หลังเล็กๆ มีป้ายแขวนไว้ว่า "Open"...</p>
                 
-                <div id="choice-group" class="flex flex-wrap gap-3 mt-4">
+                <div id="choice-group" class="flex flex-wrap gap-4 mt-6">
                     <button class="choice-btn" onclick="handleChoice('open')">เปิดประตูเข้าไป</button>
                     <button class="choice-btn" onclick="handleChoice('pass')">เดินผ่านไป</button>
                 </div>
 
-                <div id="wish-form" class="hidden space-y-3 mt-4">
-                    <input type="text" id="p-name" placeholder="ชื่อของคุณ" class="w-full p-2 rounded-lg border-2 border-orange-100 outline-none focus:border-orange-300">
-                    <textarea id="p-wish" placeholder="เขียนคำอวยพรวันเกิดให้บาริสต้า..." class="w-full p-2 rounded-lg border-2 border-orange-100 outline-none h-20"></textarea>
-                    <button class="choice-btn w-full bg-orange-100" onclick="sendWish()">ส่งคำอวยพร ✨</button>
+                <div id="wish-form" class="hidden mt-4">
+                    <input type="text" id="p-name" placeholder="ชื่อของคุณ">
+                    <textarea id="p-wish" placeholder="เขียนคำอวยพรวันเกิด..."></textarea>
+                    <button class="choice-btn w-full !bg-[#8D6E63] !text-white" onclick="sendWish()">ส่งคำอวยพรให้บาริสต้า</button>
                 </div>
             </div>
         </div>
@@ -152,53 +152,49 @@
         const sprite = document.getElementById('char-sprite');
         const bg = document.getElementById('bg-overlay');
         const wishForm = document.getElementById('wish-form');
-        const miniIcon = document.getElementById('mini-icon');
 
         function handleChoice(action) {
             if (action === 'open') {
-                // เปลี่ยนฉากเข้าในร้าน
-                bg.style.filter = "brightness(0.9) blur(1px)";
+                bg.style.filter = "brightness(0.9)";
                 sprite.classList.remove('opacity-0', 'translate-y-10');
                 sprite.classList.add('opacity-100', 'translate-y-0');
                 
                 nameEl.innerText = "บาริสต้า";
-                miniIcon.innerText = "👦";
-                textEl.innerText = "กริ๊ง~ ยินดีต้อนรับครับ! วันนี้รับเครื่องดื่มอะไรดีครับ?";
+                textEl.innerText = "ยินดีต้อนรับครับ! กลิ่นกาแฟวันนี้หอมเป็นพิเศษเลยนะ รับอะไรดีครับ?";
                 
                 choicesEl.innerHTML = `
-                    <button class="choice-btn" onclick="serve('คาปูชิโน่ร้อน')">คาปูชิโน่ร้อน</button>
-                    <button class="choice-btn" onclick="serve('เอสเพรสโซ่')">เอสเพรสโซ่</button>
+                    <button class="choice-btn" onclick="serve('คาปูชิโน่')">คาปูชิโน่</button>
+                    <button class="choice-btn" onclick="serve('ลาเต้ร้อน')">ลาเต้ร้อน</button>
                 `;
-            } else if (action === 'pass') {
-                textEl.innerText = "คุณตัดสินใจเดินผ่านไป... ไว้คราวหน้าค่อยมาใหม่นะ (จบ)";
+            } else {
+                textEl.innerText = "ขอบคุณที่แวะมามองร้านเรานะครับ... ไว้โอกาสหน้าค่อยเจอกันครับ";
                 choicesEl.innerHTML = '';
             }
         }
 
         function serve(drink) {
-            miniIcon.innerText = "☕";
-            textEl.innerText = `จัดไปครับ ${drink} หนึ่งแก้ว... อ้อ วันนี้วันเกิดผมเอง แก้วนี้ผมไม่คิดเงินนะครับ ถือว่าเป็นของขวัญที่แวะมาหากัน`;
+            textEl.innerText = `จัดไปครับ ${drink} หนึ่งแก้ว... อ้อ วันนี้วันเกิดผมเองครับ ผมตั้งใจจะแจกเครื่องดื่มฟรีให้ลูกค้าคนแรกของวัน ซึ่งก็คือคุณครับ!`;
             
             choicesEl.innerHTML = `
                 <button class="choice-btn" onclick="openWish()">อวยพรวันเกิดเขา</button>
-                <button class="choice-btn" onclick="closeGame()">ขอบคุณและเดินออกจากร้าน</button>
+                <button class="choice-btn" onclick="finish()">ยิ้มและกล่าวขอบคุณ</button>
             `;
         }
 
         function openWish() {
-            textEl.innerText = "ขอบคุณจริงๆ ครับที่อยากอวยพรให้ผม เขียนลงในสมุดเยี่ยมตรงนี้ได้เลยนะครับ";
+            textEl.innerText = "ขอบคุณมากเลยครับ! ถ้าไม่รังเกียจ ช่วยเขียนชื่อและคำอวยพรลงในสมุดเล่มนี้หน่อยได้ไหมครับ?";
             choicesEl.classList.add('hidden');
             wishForm.classList.remove('hidden');
         }
 
         function sendWish() {
-            const name = document.getElementById('p-name').value || "ใครบางคน";
+            const name = document.getElementById('p-name').value || "คุณ";
             wishForm.classList.add('hidden');
-            textEl.innerText = `ขอบคุณมากเลยนะครับคุณ ${name} ผมจะเก็บคำอวยพรนี้ไว้อย่างดีเลย! มีความสุขมากๆ เช่นกันนะครับ`;
+            textEl.innerText = `ขอบคุณมากเลยครับคุณ ${name}! คำอวยพรของคุณทำให้วันเกิดปีนี้ของผมพิเศษที่สุดเลยครับ`;
         }
 
-        function closeGame() {
-            textEl.innerText = "ขอบคุณที่แวะมานะครับ ขอให้เป็นวันที่ดีนะ!";
+        function finish() {
+            textEl.innerText = "แค่เห็นคุณชอบเครื่องดื่ม ผมก็ดีใจแล้วครับ ขอให้เป็นวันที่อบอุ่นนะครับ!";
             choicesEl.innerHTML = '';
         }
     </script>
