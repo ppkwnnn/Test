@@ -3,341 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy Cafe - Barista's Birthday</title>
-    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* --- CSS Section --- */
         :root {
-            --cafe-cream: #FDF5E6;
-            --cafe-beige: #F5F5DC;
-            --cafe-brown: #8B4513;
-            --cafe-soft-brown: #D2B48C;
-            --cafe-nude: #E6CCB2;
-            --text-color: #5D4037;
+            --box-bg: rgba(245, 230, 200, 0.9); /* สีครีมกระดาษเก่า */
+            --name-bg: #8b5e3c; /* สีน้ำตาลป้ายชื่อ */
         }
-
-        * { box-sizing: border-box; }
 
         body, html {
             margin: 0;
             padding: 0;
-            width: 100%;
             height: 100%;
-            font-family: 'Mali', cursive; /* ฟอนต์ลายมือที่ดูเป็นมิตร */
-            background-color: var(--cafe-cream);
-            color: var(--text-color);
             overflow: hidden;
+            font-family: 'Tahoma', sans-serif;
         }
 
-        #game-container {
+        /* ฉากหลัง */
+        .game-container {
             position: relative;
             width: 100vw;
             height: 100vh;
+            background: url('https://via.placeholder.com/1920x1080/442222/ffffff?text=Theater+Background') no-repeat center center;
+            background-size: cover;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            background: #222; /* พื้นหลังมืดตอนเริ่ม */
+            justify-content: center;
+            align-items: flex-end;
         }
 
-        /* พื้นหลังคาเฟ่ */
-        #background {
+        /* ตัวละคร (Sprite) */
+        .character-sprite {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1501339819358-ee5f8b47d39a?q=80&w=2070') center/cover;
-            filter: brightness(0.3); /* มืดตอนยังไม่เปิดประตู */
+            bottom: 100px;
+            height: 80%;
             z-index: 1;
-            transition: filter 1.5s ease-in-out;
+            /* ในงานจริงใช้รูป PNG โปร่งใส */
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
         }
 
-        /* ตัวละครบาริสต้า */
-        #character-container {
-            position: absolute;
-            bottom: 120px;
-            z-index: 2;
-            display: none; /* ซ่อนจนกว่าจะเปิดประตู */
-            opacity: 0;
-            transition: opacity 1s;
-        }
-
-        #barista-img {
-            height: 75vh;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
-        }
-
-        /* กล่องข้อความ Visual Novel */
-        #dialogue-box {
+        /* ส่วนของ UI ข้อความ */
+        .dialogue-wrapper {
             position: relative;
-            width: 85%;
-            max-width: 800px;
-            min-height: 150px;
-            background: rgba(253, 245, 230, 0.95);
-            border: 5px solid var(--cafe-brown);
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 30px;
+            width: 90%;
+            max-width: 1000px;
+            margin-bottom: 40px;
             z-index: 10;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        #speaker-name {
-            position: absolute;
-            top: -25px;
-            left: 30px;
-            background: var(--cafe-brown);
+        /* ป้ายชื่อ */
+        .name-tag {
+            background-color: var(--name-bg);
             color: white;
-            padding: 5px 25px;
-            border-radius: 15px;
+            padding: 5px 40px;
+            border-radius: 20px 5px 20px 5px;
+            display: inline-block;
+            font-weight: bold;
             font-size: 1.2rem;
+            border: 2px solid #5d3a1a;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
         }
 
-        #dialogue-text {
-            font-size: 1.15rem;
-            line-height: 1.6;
-            margin-top: 10px;
+        /* กล่องข้อความ */
+        .dialogue-box {
+            background: var(--box-bg);
+            border: 4px solid #d2b48c;
+            border-radius: 10px;
+            padding: 40px 30px 25px;
+            min-height: 100px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
         }
 
-        /* ปุ่มกด */
-        .options-wrapper {
-            margin-top: 15px;
+        .text-content {
+            font-size: 1.5rem;
+            color: #332211;
+            line-height: 1.4;
+        }
+
+        /* ปุ่มข้าม (Skip/Auto) มุมบน */
+        .top-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
-        button {
-            background-color: var(--cafe-brown);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Itim', cursive;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            background-color: var(--cafe-soft-brown);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-        }
-
-        /* Modal สำหรับหน้าเขียนคำอวยพร */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+        .btn {
             background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: var(--cafe-beige);
-            padding: 30px;
-            border-radius: 30px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            border: 3px solid var(--cafe-brown);
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 15px;
-            border: 1px solid var(--cafe-soft-brown);
-            font-family: 'Mali', cursive;
-        }
-
-        /* บอร์ดคำอวยพร */
-        #wish-list {
-            max-height: 300px;
-            overflow-y: auto;
-            text-align: left;
-            margin: 15px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 15px;
-        }
-
-        .wish-item {
-            padding: 10px;
-            border-bottom: 1px dashed var(--cafe-soft-brown);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div id="background"></div>
-
-        <div id="character-container">
-            <img id="barista-img" src="https://i.ibb.co/Y7Xvj5t/barista-character.png" onerror="this.src='https://via.placeholder.com/400x600/D2B48C/5D4037?text=Cute+Barista'" alt="Barista">
+    <div class="game-container">
+        <div class="top-menu">
+            <div class="btn">AUTO</div>
+            <div class="btn">SKIP ≫</div>
         </div>
 
-        <div id="dialogue-box">
-            <div id="speaker-name">???</div>
-            <div id="dialogue-text">มีบานประตูไม้สีน้ำตาลอ่อนตั้งอยู่ตรงหน้าคุณ พร้อมกลิ่นหอมของเมล็ดกาแฟที่ลอยออกมา...</div>
-            <div class="options-wrapper" id="options">
-                <button onclick="openDoor()">เปิดประตูเข้าไป</button>
-                <button onclick="refuseEntry()">เดินผ่านไป</button>
+        <img src="https://via.placeholder.com/600x800/228844/ffffff?text=Character" class="character-sprite" alt="Character">
+
+        <div class="dialogue-wrapper">
+            <div class="name-tag">คิอิโระ (キイロ)</div>
+            <div class="dialogue-box">
+                <div class="text-content">
+                    กื๊ออออออออ—!! (ぐおおおぉー！！)
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="wish-form-modal" class="modal">
-        <div class="modal-content">
-            <h2 style="color: var(--cafe-brown);">เขียนคำอวยพรวันเกิด</h2>
-            <input type="text" id="user-name" placeholder="ชื่อของคุณ">
-            <textarea id="user-wish" rows="4" placeholder="ขอให้มีความสุขมากๆ นะ..."></textarea>
-            <button onclick="submitWish()">ส่งความรู้สึกดีๆ</button>
-            <button style="background: #999;" onclick="closeModal('wish-form-modal')">ยกเลิก</button>
-        </div>
-    </div>
-
-    <div id="wish-board-modal" class="modal">
-        <div class="modal-content">
-            <h2 style="color: var(--cafe-brown);">สมุดบันทึกคำอวยพร</h2>
-            <div id="wish-list">
-                <p style="text-align: center;">กำลังโหลดข้อความด้วยความอบอุ่น...</p>
-            </div>
-            <button onclick="closeModal('wish-board-modal')">ปิดหน้าต่าง</button>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-    <script>
-        // --- Firebase Configuration ---
-        // ให้คุณนำ Config จาก Firebase Console มาวางแทนที่ด้านล่างนี้
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-        };
-        
-        // ตรวจสอบว่ามีการตั้งค่า Config หรือยัง (ถ้ายังจะเก็บข้อมูลในเครื่องแทน)
-        let useFirebase = false;
-        if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-            firebase.initializeApp(firebaseConfig);
-            useFirebase = true;
-        }
-
-        const dialogueText = document.getElementById('dialogue-text');
-        const speakerName = document.getElementById('speaker-name');
-        const optionsWrapper = document.getElementById('options');
-        const charContainer = document.getElementById('character-container');
-        const bg = document.getElementById('background');
-
-        // 1. ฉากเปิดประตู
-        function openDoor() {
-            bg.style.filter = "brightness(1.1)";
-            charContainer.style.display = "block";
-            setTimeout(() => charContainer.style.opacity = "1", 100);
-            
-            speakerName.innerText = "บาริสต้า";
-            dialogueText.innerText = "ยินดีต้อนรับสู่ Cozy Cafe ครับ! ผมกำลังรอคุณอยู่พอดีเลย วันนี้รับเครื่องดื่มอะไรดีครับ?";
-            
-            optionsWrapper.innerHTML = `
-                <button onclick="orderDrink('คาปูชิโน่ร้อน')">คาปูชิโน่ร้อน</button>
-                <button onclick="orderDrink('นมอุ่นๆ')">นมอุ่นๆ สักแก้ว</button>
-            `;
-        }
-
-        function refuseEntry() {
-            speakerName.innerText = "ระบบ";
-            dialogueText.innerText = "คุณตัดสินใจเดินผ่านร้านไป... ขอบคุณที่แวะมามองนะครับ";
-            optionsWrapper.innerHTML = `<button onclick="location.reload()">กลับไปหน้าประตูใหม่</button>`;
-        }
-
-        // 2. ฉากเสิร์ฟเครื่องดื่ม
-        function orderDrink(drink) {
-            dialogueText.innerText = `รับเป็น ${drink} นะครับ... รอสักครู่เดียวครับ`;
-            optionsWrapper.innerHTML = ``;
-
-            setTimeout(() => {
-                dialogueText.innerText = `นี่ครับ ${drink} ของคุณ... อ้อ! จริงๆ แล้ววันนี้เป็นวันเกิดของผมเอง ผมเลยอยากเลี้ยงคุณเป็นพิเศษ มื้อนี้ไม่ต้องจ่ายเงินนะครับ`;
-                optionsWrapper.innerHTML = `
-                    <button onclick="openModal('wish-form-modal')">สุขสันต์วันเกิดนะ!</button>
-                    <button onclick="justThank()">ขอบคุณมากนะ (ยิ้ม)</button>
-                `;
-            }, 2500);
-        }
-
-        function justThank() {
-            dialogueText.innerText = "ด้วยความยินดีครับ แค่เห็นคุณชอบเครื่องดื่มของผม ผมก็มีความสุขแล้วครับ";
-            optionsWrapper.innerHTML = `<button onclick="openModal('wish-board-modal')">ดูคำอวยพรจากคนอื่นๆ</button>`;
-        }
-
-        // 3. ระบบ Modal และคำอวยพร
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-            if (id === 'wish-board-modal') loadWishes();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        function submitWish() {
-            const name = document.getElementById('user-name').value;
-            const wish = document.getElementById('user-wish').value;
-
-            if (name && wish) {
-                if (useFirebase) {
-                    firebase.database().ref('wishes').push({
-                        name: name,
-                        wish: wish,
-                        date: new Date().toLocaleDateString()
-                    });
-                } else {
-                    // กรณีไม่มี Firebase (บันทึกลง LocalStorage ในเครื่องแทน)
-                    let localWishes = JSON.parse(localStorage.getItem('wishes') || '[]');
-                    localWishes.push({name, wish, date: 'วันนี้'});
-                    localStorage.setItem('wishes', JSON.stringify(localWishes));
-                }
-
-                closeModal('wish-form-modal');
-                dialogueText.innerText = `ขอบคุณสำหรับคำอวยพรนะครับคุณ ${name}! เป็นของขวัญที่มีค่ามากเลยล่ะครับ`;
-                optionsWrapper.innerHTML = `<button onclick="openModal('wish-board-modal')">ดูสมุดบันทึกคำอวยพร</button>`;
-            } else {
-                alert("กรุณากรอกชื่อและคำอวยพรให้บาริสต้าด้วยนะครับ");
-            }
-        }
-
-        function loadWishes() {
-            const list = document.getElementById('wish-list');
-            list.innerHTML = "";
-
-            if (useFirebase) {
-                firebase.database().ref('wishes').on('value', (snapshot) => {
-                    list.innerHTML = "";
-                    snapshot.forEach((child) => {
-                        const data = child.val();
-                        list.innerHTML += `<div class="wish-item"><strong>${data.name}:</strong> ${data.wish}</div>`;
-                    });
-                });
-            } else {
-                let localWishes = JSON.parse(localStorage.getItem('wishes') || '[]');
-                if (localWishes.length === 0) {
-                    list.innerHTML = "<p>ยังไม่มีคำอวยพรในขณะนี้...</p>";
-                } else {
-                    localWishes.forEach(data => {
-                        list.innerHTML += `<div class="wish-item"><strong>${data.name}:</strong> ${data.wish}</div>`;
-                    });
-                }
-            }
-        }
-    </script>
 </body>
 </html>
