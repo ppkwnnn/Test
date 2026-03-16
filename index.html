@@ -517,6 +517,11 @@
                 { text: "ดูหน้ารวมคำอวยพร", next: 9 },
                 { text: "กลับไปเริ่มใหม่", next: 1 }
             ]
+        },
+        9: { // เพิ่มส่วนนี้เข้าไป
+            text: "กำลังเปิดสมุดคำอวยพร...",
+            name: "ระบบ",
+            choices: []
         }
     };
 
@@ -568,7 +573,7 @@
         }
         
         // End Scene Logic
-        if (stateKey === 9) {
+        if (stateKey === 9 || stateKey === "9") {
             toggleWishBoard(true);
             return;
         }
