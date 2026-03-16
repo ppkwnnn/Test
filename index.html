@@ -100,49 +100,6 @@
             letter-spacing: 1px;
         }
 
-        #start-over-btn {
-            position: fixed;
-            right: 18px;
-            bottom: 18px;
-            z-index: 100;
-            background: linear-gradient(135deg, #ffffff, #f6f6f6);
-            border: 2px solid #d4d4d4;
-            width: 107px;
-            height: 107px;
-            border-radius: 50%;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-            color: #3f2d24;
-            font-weight: 700;
-            font-family: 'Prompt', sans-serif;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            transition: transform 0.18s ease, box-shadow 0.18s ease;
-            backdrop-filter: blur(2px);
-        }
-
-        #start-over-btn:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 12px 26px rgba(0,0,0,0.35);
-        }
-
-        #start-over-btn .arrow {
-            font-size: 1.2rem;
-            margin-top: -3px;
-            transform: rotate(0deg);
-        }
-
-        #start-over-btn .label {
-            font-size: 0.68rem;
-            text-align: center;
-            letter-spacing: 0.2px;
-            line-height: 1.15;
-            width: 72px;
-        }
-
         /* --- Choice Style --- */
         #choice-container {
             position: absolute;
@@ -288,11 +245,6 @@
         <div id="text-content">...</div>
         <div class="auto-indicator">AUTO ▶</div>
     </div>
-
-    <button id="start-over-btn" onclick="startOver()" aria-label="Start Over">
-        <div class="arrow">↻</div>
-        <div class="label">Start Over</div>
-    </button>
 
     <div id="wish-form">
         <div class="notebook-header">
@@ -469,10 +421,6 @@
         } else {
             alert("กรุณาใส่ชื่อและคำอวยพรในสมุดก่อนนะครับ");
         }
-    }
-
-    function startOver() {
-        window.location.reload();
     }
 
     // Initialize Game
