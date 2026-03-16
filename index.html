@@ -450,8 +450,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        .hidden { display: none !important; }
-
         #open-wish-board {
             position: fixed;
             bottom: 18px;
@@ -499,7 +497,7 @@
 
     <div id="choice-container"></div>
 
-    <div id="dialogue-box">
+    <div id="dialogue-box" class="hidden">
         <div id="name-tag">???</div>
         <div id="text-content">...</div>
         <div class="auto-indicator">AUTO ▶</div>
@@ -646,6 +644,13 @@
         const step = story[stateKey];
         if (!step) return;
 
+        // --- เพิ่มเงื่อนไขนี้เข้าไป ---
+        if (stateKey === 9 || stateKey === "9") {
+            toggleWishBoard(true); // เปิดหน้าสมุด
+            return; // หยุดทำงานตรงนี้เลย ไม่ต้องไปวาดกล่องข้อความหรือเปลี่ยนชื่อตัวละคร
+        }
+        // -------------------------
+
         // Reset UI Components
         choiceContainer.innerHTML = '';
         wishForm.style.display = 'none';
@@ -689,11 +694,7 @@
             });
         }
         
-        // End Scene Logic
-        if (stateKey === 9 || stateKey === "9") {
-            toggleWishBoard(true);
-            return;
-        }
+        // End Scene Logic - No longer needed here since we moved it to the top
     }
 
     const FIREBASE_DB_URL = 'https://project-test01-49383-default-rtdb.firebaseio.com';
@@ -796,8 +797,14 @@
         const board = document.getElementById('wish-board');
         if (!board) return;
         board.classList.toggle('hidden', !show);
+        
+        // Hide character when wish board is shown
         if (show) {
+            characterImg.style.opacity = "0";
+            characterImg.style.transform = "translateY(20px)";
             loadWishes();
+        } else {
+            // Optionally restore character visibility when closing, but let the game state handle it
         }
     }
 
@@ -839,8 +846,16 @@
     }
 
     function startGame() {
+        // 1. ซ่อนหน้า Start Screen
         document.getElementById('start-screen').classList.add('hidden');
+        
+        // 2. แสดงกล่องคำพูด (เอา hidden ออก)
+        document.getElementById('dialogue-box').classList.remove('hidden');
+        
+        // 3. เริ่มเนื้อเรื่องบทที่ 1
         updateGame(1);
+        
+        // โหลดข้อมูลคำอวยพรรอไว้
         loadWishes();
     }
 
