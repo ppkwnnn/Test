@@ -269,54 +269,25 @@
             overflow: hidden;
         }
 
-        /* ปรับตำแหน่ง Post-it ให้ดูเหมือนแปะกระจายสองหน้า */
+        /* รายการ Post-it */
         #wish-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 25px;
-            justify-content: space-around; /* กระจายตัวให้เข้ากับหน้าซ้าย-ขวา */
+            gap: 12px; /* ลดช่องว่างระหว่างแผ่นเล็กน้อย */
+            justify-content: center;
             overflow-y: auto;
             height: 100%;
             padding: 20px;
-            
-            /* ปรับแต่ง Scrollbar ให้ดูสะอาดตา */
             scrollbar-width: thin;
             scrollbar-color: #AD8350 transparent;
         }
 
-        #wish-list::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            top: 10%;
-            bottom: 10%;
-            width: 2px;
-            background: rgba(0,0,0,0.03); /* เส้นจางมากๆ ตรงรอยพับ */
-            pointer-events: none;
-        }
-
-        /* ส่วนหัวข้อบอร์ด ปรับให้ดูเหมือนเขียนลงบนสมุด */
-        .board-title-container {
-            position: absolute;
-            top: 35px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #5a4a42;
-            font-family: 'Prompt', sans-serif;
-            letter-spacing: 2px;
-            opacity: 0.9;
-        }
-
-        /* สไตล์แผ่น Post-it */
+        /* สไตล์แผ่น Post-it ขนาดจิ๋ว */
         .post-it {
-            width: 115px;
-            height: 115px;
-            padding: 12px;
-            /* เพิ่มเงาที่นุ่มนวลขึ้น */
-            box-shadow: 2px 4px 8px rgba(0,0,0,0.15);
+            width: 90px;  /* เล็กลงเพื่อให้แปะได้เยอะขึ้น */
+            height: 90px; /* เล็กลงเพื่อให้แปะได้เยอะขึ้น */
+            padding: 8px;
+            box-shadow: 2px 3px 6px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -324,8 +295,6 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            
-            /* ทำให้ดูเหมือนกระดาษเนื้อด้าน */
             border-bottom-right-radius: 2px;
             font-family: 'Prompt', sans-serif;
         }
@@ -338,15 +307,23 @@
 
         .post-it .wish-name {
             font-weight: 600;
-            font-size: 0.85rem;
-            color: #433422; /* สีน้ำตาลเข้มเกือบดำเพื่อให้ตัดกับพื้นหลัง */
+            font-size: 0.75rem; /* ลดขนาดฟอนต์ชื่อ */
+            color: #433422;
             word-break: break-word;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         /* ซ่อนข้อความยาวๆ ไว้ดูตอน Hover หรือ Click */
         .post-it .wish-text-preview {
             display: none; /* หากต้องการโชว์แค่ชื่อ */
+        }
+
+        /* ซ่อนคำว่า READ MORE ในขนาดจิ๋วเพื่อความสะอาดตา หรือปรับให้เล็กลงมาก */
+        .post-it .read-more-text {
+            font-size: 0.45rem;
+            margin-top: 5px;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
         }
 
         /* สไตล์ของหน้าต่าง Modal */
@@ -759,7 +736,7 @@
                      style="background-color: ${randomColor}; transform: rotate(${randomRotate}deg); border-left: 2px solid rgba(0,0,0,0.05);"
                      onclick="showWishDetail('${w.name}', '${w.wish.replace(/'/g, "\\'")}')">
                     <div class="wish-name">${w.name || 'Anonymous'}</div>
-                    <div style="font-size: 0.55rem; margin-top: 8px; opacity: 0.7; letter-spacing: 0.5px;">READ MORE</div>
+                    <div class="read-more-text">READ MORE</div>
                 </div>
             `;
         });
