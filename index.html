@@ -44,29 +44,31 @@
         /* Character Layer */
         #character {
             position: absolute;
-            bottom: 180px; /* ขยับขึ้นเหนือกล่องคำพูดเล็กน้อย */
-            height: 75%;
-            max-height: 700px;
+            bottom: 20vh; /* อิงความสูงจอ */
+            height: 65%;  /* ปรับความสูงให้พอดี */
+            max-height: 600px;
             opacity: 0;
-            transition: opacity 0.8s ease, transform 0.5s ease;
+            transition: all 0.5s ease;
             z-index: 1;
         }
 
         /* --- Dialogue Box Style (ตามรูปตัวอย่าง) --- */
         #dialogue-box {
-            width: 92%;
+            width: 95%; /* เกือบเต็มจอ */
             max-width: 900px;
-            min-height: 160px;
+            min-height: 140px;
             background: #f5e9df;
             border-radius: 25px;
             margin-bottom: 30px;
-            padding: 40px 45px 25px 45px;
+            bottom: 20px; /* ชิดขอบล่าง */
+            padding: 35px 25px 20px;
             box-sizing: border-box;
             border: 3px solid #7a5133;
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             z-index: 10;
             position: relative;
             backdrop-filter: blur(8px);
+            font-size: clamp(0.95rem, 3vw, 1.2rem);
         }
 
         #name-tag {
@@ -250,17 +252,17 @@
         }
 
         #wish-board .board-card {
-            width: 95%;
-            max-width: 1000px; /* ขยายให้เห็นหน้าคู่ชัดขึ้น */
-            height: 85vh;
+            width: 98%;
+            height: 90vh;
             /* ใส่ Link รูปสมุดที่คุณส่งมา */
             background-image: url('https://i.ibb.co/99ZQbx6V/IMG-7806.jpg'); 
-            background-size: 100% 100%;
+            background-size: cover; /* ใช้ cover เพื่อให้รูปสมุดเต็มพื้นที่ */
+            background-position: center;
             background-repeat: no-repeat;
             position: relative;
             
             /* ปรับ Padding ให้เนื้อหาไม่ไปทับขอบสมุดหรือรอยพับตรงกลาง */
-            padding: 60px 50px; 
+            padding: 10% 5%; /* ใช้ % แทน px */
             box-sizing: border-box;
             box-shadow: 0 30px 60px rgba(0,0,0,0.6);
             
@@ -399,11 +401,11 @@
             z-index: 1001;
         }
 
+        /* ปรับหน้าจอเริ่มต้นให้เต็มจอและจัดวางกึ่งกลางเสมอ */
         #start-screen {
             position: fixed;
             inset: 0;
-            /* เปลี่ยน URL เป็นรูปคาเฟ่ของคุณ */
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
                         url('https://images.unsplash.com/photo-1509042239263-0219ca99738d?q=80&w=1974&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
@@ -411,43 +413,67 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* จัดให้อยู่กลางจอ */
-            font-family: 'Prompt', sans-serif;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
+        /* ปรับขนาดโลโก้ให้ยืดหยุ่นตามหน้าจอ */
         .start-logo {
-            font-size: clamp(3rem, 8vw, 5rem);
+            font-size: clamp(2.5rem, 10vw, 5rem); /* ขนาดจะเปลี่ยนตามความกว้างจอ */
             font-weight: 800;
             color: white;
-            margin-bottom: 40px;
+            margin-bottom: 5vh; /* เว้นระยะล่าง 5% ของความสูงจอ */
             text-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            letter-spacing: 5px;
+            text-align: center;
+            line-height: 1.2;
         }
 
-        /* Container สำหรับปุ่มเรียงแนวนอน */
+        /* ปุ่มเมนูเรียงเป็นแนวนอน แต่ถ้าจอแคบ (มือถือ) จะสลับเป็นแนวตั้ง */
         .menu-container {
             display: flex;
-            gap: 20px; /* ระยะห่างระหว่างปุ่ม */
+            flex-direction: row; /* แนวนอนเป็นหลัก */
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
             justify-content: center;
+            flex-wrap: wrap; /* ถ้าที่พักไม่พอจะขึ้นบรรทัดใหม่ */
         }
 
         .menu-btn {
-            background: rgba(90, 58, 24, 0.6); /* สีน้ำตาลโปร่งแสง 60% */
+            background: rgba(90, 58, 24, 0.6);
             color: white;
             border: 1.5px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 35px;
-            font-size: 1.1rem;
+            padding: 12px 30px;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
             font-weight: 600;
-            letter-spacing: 2px;
             cursor: pointer;
-            border-radius: 8px; /* โค้งมนเล็กน้อยตามรูปตัวอย่าง */
+            border-radius: 8px;
             transition: all 0.3s ease;
+            min-width: 140px; /* ขนาดขั้นต่ำเพื่อให้ปุ่มดูไม่เล็กเกินไป */
+            flex: 1 1 auto; /* ให้ปุ่มขยายขนาดตามพื้นที่ที่ว่าง */
+            max-width: 200px;
         }
 
         .menu-btn:hover {
             background: rgba(90, 58, 24, 0.9); /* เข้มขึ้นเมื่อเอาเมาส์วาง */
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* --- สำหรับหน้าจอเล็ก (Mobile Portrait) --- */
+        @media (max-width: 480px) {
+            .menu-container {
+                flex-direction: column; /* เปลี่ยนเป็นแนวตั้งในมือถือ */
+                align-items: center;
+            }
+            .menu-btn {
+                width: 80%; /* ปุ่มกว้างขึ้นในมือถือเพื่อให้กดง่าย */
+                max-width: 280px;
+            }
+            .start-logo {
+                margin-bottom: 30px;
+            }
         }
 
         #open-wish-board {
@@ -472,10 +498,27 @@
         }
 
         @media (max-width: 600px) {
-            #character { height: 60%; bottom: 180px; }
-            #dialogue-box { font-size: 1rem; padding: 35px 25px 20px 25px; }
+            #character {
+                height: 50%; /* ในมือถือลดตัวละครลงหน่อย */
+                bottom: 160px;
+            }
+            #dialogue-box {
+                width: 98%;
+                padding: 30px 15px 15px;
+            }
             #name-tag { left: 25px; padding: 4px 30px; font-size: 1rem; }
             #wish-form { height: 500px; padding-left: 55px; }
+        }
+
+        /* ปรับขนาด Post-it ในมือถือให้เล็กลงอีก */
+        @media (max-width: 480px) {
+            .post-it {
+                width: 75px;
+                height: 75px;
+            }
+            .post-it .wish-name {
+                font-size: 0.65rem;
+            }
         }
     </style>
 </head>
