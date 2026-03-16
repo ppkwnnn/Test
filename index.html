@@ -287,38 +287,101 @@
 
         /* สไตล์แผ่น Post-it */
         .post-it {
-            width: 120px;
-            height: 120px;
-            padding: 15px;
-            background: #ffeb3b;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+            width: 115px;
+            height: 115px;
+            padding: 12px;
+            /* เพิ่มเงาที่นุ่มนวลขึ้น */
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.2s;
-            position: relative;
+            transition: all 0.3s ease;
+            
+            /* ทำให้ดูเหมือนกระดาษเนื้อด้าน */
+            border-bottom-right-radius: 2px;
             font-family: 'Prompt', sans-serif;
         }
 
         .post-it:hover {
             transform: scale(1.1) rotate(0deg) !important;
-            z-index: 10;
+            box-shadow: 5px 10px 20px rgba(0,0,0,0.2);
+            z-index: 100;
         }
 
         .post-it .wish-name {
             font-weight: 600;
-            font-size: 0.9rem;
-            color: #333;
+            font-size: 0.85rem;
+            color: #433422; /* สีน้ำตาลเข้มเกือบดำเพื่อให้ตัดกับพื้นหลัง */
             word-break: break-word;
+            line-height: 1.2;
         }
 
         /* ซ่อนข้อความยาวๆ ไว้ดูตอน Hover หรือ Click */
         .post-it .wish-text-preview {
             display: none; /* หากต้องการโชว์แค่ชื่อ */
         }
+
+        /* สไตล์ของหน้าต่าง Modal */
+        #wish-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6); /* พื้นหลังดำจางๆ */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* ให้อยู่เหนือทุกอย่าง */
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #FDF5E6; /* สีขาวครีม */
+            width: 85%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 2px solid #D6BD98;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #AD8350;
+            cursor: pointer;
+        }
+
+        #modal-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #5a4a42;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #D6BD98;
+            padding-bottom: 10px;
+        }
+
+        #modal-text {
+            font-size: 1.1rem;
+            color: #433422;
+            line-height: 1.6;
+            white-space: pre-wrap; /* เพื่อให้ขึ้นบรรทัดใหม่ตามที่ผู้ใช้พิมพ์ */
+        }
+
+        /* คลาสสำหรับซ่อน Modal */
+        .hidden { display: none !important; }
 
         .close-board-btn {
             position: absolute;
@@ -459,6 +522,14 @@
     <button id="open-wish-board" type="button" aria-label="ดูหน้ารวมคำอวยพร" onclick="toggleWishBoard(true)">
         📒 ดูคำอวยพร
     </button>
+</div>
+
+<div id="wish-modal" class="hidden" onclick="closeWishModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeWishModal()">✕</button>
+        <div id="modal-name">ชื่อผู้เขียน</div>
+        <div id="modal-text">ข้อความคำอวยพร...</div>
+    </div>
 </div>
 
 <script>
@@ -629,29 +700,56 @@
         if (!container) return;
         
         if (!wishes.length) {
-            container.innerHTML = '<p>ยังไม่มีคำอวยพร...</p>';
+            container.innerHTML = '<p style="color: #5a4a42;">ยังไม่มีคำอวยพรในสมุดเล่มนี้...</p>';
             return;
         }
 
-        // รายการสี Post-it แบบพาสเทล
-        const colors = ['#ff7eb9', '#ffffa5', '#a5f2f3', '#d8ffb1', '#ffc1ff', '#7afcff'];
+        // ชุดสี Earth Tone แบบละมุน
+        const earthToneColors = [
+            '#EAE0D5', // Sand
+            '#C6AC8F', // Warm Tan
+            '#AD8350', // Muted Gold/Oak
+            '#8E9775', // Sage Green
+            '#A2AD91', // Light Olive
+            '#D6BD98', // Dust
+            '#BCA37F'  // Clay
+        ];
 
         const items = wishes.map(w => {
-            // สุ่มสีและองศาการเอียง (-5 ถึง 5 องศา)
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            const randomRotate = Math.floor(Math.random() * 10) - 5;
+            // สุ่มสีจากชุด Earth Tone
+            const randomColor = earthToneColors[Math.floor(Math.random() * earthToneColors.length)];
+            // สุ่มองศาการเอียงเล็กน้อยให้ดูเป็นธรรมชาติ
+            const randomRotate = (Math.random() * 8 - 4).toFixed(2); 
 
             return `
                 <div class="post-it" 
-                     style="background-color: ${randomColor}; transform: rotate(${randomRotate}deg);"
-                     onclick="alert('ข้อความจาก ${w.name}: \\n${w.wish}')">
+                     style="background-color: ${randomColor}; transform: rotate(${randomRotate}deg); border-left: 2px solid rgba(0,0,0,0.05);"
+                     onclick="showWishDetail('${w.name}', '${w.wish.replace(/'/g, "\\'")}')">
                     <div class="wish-name">${w.name || 'Anonymous'}</div>
-                    <div style="font-size: 0.6rem; margin-top: 5px; opacity: 0.6;">คลิกเพื่ออ่าน</div>
+                    <div style="font-size: 0.55rem; margin-top: 8px; opacity: 0.7; letter-spacing: 0.5px;">READ MORE</div>
                 </div>
             `;
         });
         
         container.innerHTML = items.join('');
+    }
+
+    // ฟังก์ชันแสดงรายละเอียดคำอวยพร
+    function showWishDetail(name, wish) {
+        const modal = document.getElementById('wish-modal');
+        const modalName = document.getElementById('modal-name');
+        const modalText = document.getElementById('modal-text');
+
+        modalName.innerText = `จากคุณ: ${name}`;
+        modalText.innerText = wish;
+
+        modal.classList.remove('hidden');
+    }
+
+    // ฟังก์ชันปิด Modal
+    function closeWishModal() {
+        const modal = document.getElementById('wish-modal');
+        modal.classList.add('hidden');
     }
 
     function saveLocalCache(wishes) {
