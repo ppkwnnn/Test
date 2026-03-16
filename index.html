@@ -222,6 +222,53 @@
             box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
         }
 
+        #start-screen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, #f4e7cf, #d29b59 55%, #7f5137 100%);
+            color: #fff;
+            z-index: 999;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 20px;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .start-logo {
+            font-size: clamp(2rem, 6vw, 3.3rem);
+            letter-spacing: 1px;
+            font-weight: 800;
+            margin-bottom: 0.2em;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .start-subtitle {
+            color: #ffe9c8;
+            margin-bottom: 1rem;
+            font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+            font-weight: 500;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        #start-btn {
+            border: none;
+            border-radius: 999px;
+            background: #fff;
+            color: #5a3a18;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 12px 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        #start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(0,0,0,0.3);
+        }
+
         .hidden { display: none !important; }
 
         @media (max-width: 600px) {
@@ -233,6 +280,12 @@
     </style>
 </head>
 <body>
+
+<div id="start-screen">
+    <div class="start-logo">🍵 Warm Café</div>
+    <div class="start-subtitle">A Birthday Visual Novel</div>
+    <button id="start-btn" onclick="startGame()">Start</button>
+</div>
 
 <div id="game-container" style="background-image: url('https://images.unsplash.com/photo-1509042239263-0219ca99738d?q=80&w=1974&auto=format&fit=crop');">
     
@@ -423,8 +476,13 @@
         }
     }
 
-    // Initialize Game
-    updateGame(1);
+    function startGame() {
+        document.getElementById('start-screen').classList.add('hidden');
+        updateGame(1);
+    }
+
+    // Initialize Game: show start screen first
+    // updateGame(1) is called after pressing Start
 </script>
 
 </body>
