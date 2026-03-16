@@ -251,38 +251,63 @@
 
         #wish-board .board-card {
             width: 95%;
-            max-width: 900px;
+            max-width: 1000px; /* ขยายให้เห็นหน้าคู่ชัดขึ้น */
             height: 85vh;
-            background-image: url('https://i.ibb.co/v44m9m7/IMG-7806.jpg'); /* ใส่ URL รูปสมุดของคุณ */
+            /* ใส่ Link รูปสมุดที่คุณส่งมา */
+            background-image: url('https://i.ibb.co/99ZQbx6V/IMG-7806.jpg'); 
             background-size: 100% 100%;
             background-repeat: no-repeat;
             position: relative;
-            padding: 60px 40px;
+            
+            /* ปรับ Padding ให้เนื้อหาไม่ไปทับขอบสมุดหรือรอยพับตรงกลาง */
+            padding: 60px 50px; 
             box-sizing: border-box;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            
+            /* เพิ่มลูกเล่นให้ดูเหมือนวางอยู่บนโต๊ะ */
+            border-radius: 15px;
+            overflow: hidden;
         }
 
-        /* หัวข้อบอร์ด */
-        .board-title-container {
-            position: absolute;
-            top: 20px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #5a4a42;
-        }
-
-        /* รายการ Post-it */
+        /* ปรับตำแหน่ง Post-it ให้ดูเหมือนแปะกระจายสองหน้า */
         #wish-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
+            gap: 25px;
+            justify-content: space-around; /* กระจายตัวให้เข้ากับหน้าซ้าย-ขวา */
             overflow-y: auto;
-            height: 90%;
+            height: 100%;
             padding: 20px;
+            
+            /* ปรับแต่ง Scrollbar ให้ดูสะอาดตา */
+            scrollbar-width: thin;
+            scrollbar-color: #AD8350 transparent;
+        }
+
+        #wish-list::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 10%;
+            bottom: 10%;
+            width: 2px;
+            background: rgba(0,0,0,0.03); /* เส้นจางมากๆ ตรงรอยพับ */
+            pointer-events: none;
+        }
+
+        /* ส่วนหัวข้อบอร์ด ปรับให้ดูเหมือนเขียนลงบนสมุด */
+        .board-title-container {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #5a4a42;
+            font-family: 'Prompt', sans-serif;
+            letter-spacing: 2px;
+            opacity: 0.9;
         }
 
         /* สไตล์แผ่น Post-it */
@@ -400,48 +425,52 @@
         #start-screen {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 20% 20%, #f4e7cf, #d29b59 55%, #7f5137 100%);
-            color: #fff;
+            /* เปลี่ยน URL เป็นรูปคาเฟ่ของคุณ */
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1509042239263-0219ca99738d?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
             z-index: 999;
-            display: grid;
-            place-items: center;
-            text-align: center;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* จัดให้อยู่กลางจอ */
             font-family: 'Prompt', sans-serif;
         }
 
         .start-logo {
-            font-size: clamp(2rem, 6vw, 3.3rem);
-            letter-spacing: 1px;
+            font-size: clamp(3rem, 8vw, 5rem);
             font-weight: 800;
-            margin-bottom: 0.2em;
-            text-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            color: white;
+            margin-bottom: 40px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            letter-spacing: 5px;
         }
 
-        .start-subtitle {
-            color: #ffe9c8;
-            margin-bottom: 1rem;
-            font-size: clamp(0.9rem, 2.2vw, 1.3rem);
-            font-weight: 500;
-            text-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        /* Container สำหรับปุ่มเรียงแนวนอน */
+        .menu-container {
+            display: flex;
+            gap: 20px; /* ระยะห่างระหว่างปุ่ม */
+            justify-content: center;
         }
 
-        #start-btn {
-            border: none;
-            border-radius: 999px;
-            background: #fff;
-            color: #5a3a18;
-            font-weight: 700;
-            font-size: 1rem;
-            padding: 12px 30px;
+        .menu-btn {
+            background: rgba(90, 58, 24, 0.6); /* สีน้ำตาลโปร่งแสง 60% */
+            color: white;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            border-radius: 8px; /* โค้งมนเล็กน้อยตามรูปตัวอย่าง */
+            transition: all 0.3s ease;
         }
 
-        #start-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 22px rgba(0,0,0,0.3);
+        .menu-btn:hover {
+            background: rgba(90, 58, 24, 0.9); /* เข้มขึ้นเมื่อเอาเมาส์วาง */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .hidden { display: none !important; }
@@ -479,8 +508,12 @@
 
 <div id="start-screen">
     <div class="start-logo">🍵 Warm Café</div>
-    <div class="start-subtitle">A Birthday Visual Novel</div>
-    <button id="start-btn" onclick="startGame()">Start</button>
+    
+    <div class="menu-container">
+        <button class="menu-btn" onclick="startGame()">STORY</button>
+        <button class="menu-btn" onclick="toggleWishBoard(true)">WISHES</button>
+        <button class="menu-btn" onclick="showCredits()">CREDITS</button>
+    </div>
 </div>
 
 <div id="game-container" style="background-image: url('https://images.unsplash.com/photo-1509042239263-0219ca99738d?q=80&w=1974&auto=format&fit=crop');">
@@ -786,10 +819,13 @@
         const board = document.getElementById('wish-board');
         if (!board) return;
         board.classList.toggle('hidden', !show);
-        board.setAttribute('aria-hidden', show ? 'false' : 'true');
         if (show) {
             loadWishes();
         }
+    }
+
+    function showCredits() {
+        alert("Warm Café Visual Novel\nCreated with ❤️ for a Special Birthday\nArt & Code by: Gemini");
     }
 
     async function submitWish() {
