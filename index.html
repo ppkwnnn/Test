@@ -237,87 +237,101 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.2);
         }
 
-        /* Wish board overlay */
+        /* Wish board overlay ปรับใหม่ */
         #wish-board {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1000;
-            padding: 40px 24px;
-            box-sizing: border-box;
-            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #wish-board .board-card {
-            max-width: 700px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 26px 26px 22px;
-            box-shadow: 0 18px 28px rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(0,0,0,0.08);
+            width: 95%;
+            max-width: 900px;
+            height: 85vh;
+            background-image: url('https://i.ibb.co/v44m9m7/IMG-7806.jpg'); /* ใส่ URL รูปสมุดของคุณ */
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            position: relative;
+            padding: 60px 40px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        #wish-board .board-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        #wish-board .board-title {
+        /* หัวข้อบอร์ด */
+        .board-title-container {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
             font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
+            font-weight: bold;
             color: #5a4a42;
         }
 
-        #wish-board .close-btn {
-            border: none;
-            background: transparent;
-            font-size: 1.1rem;
-            cursor: pointer;
-            color: #5a4a42;
-            padding: 4px 8px;
-            border-radius: 12px;
-            transition: background 0.2s ease;
-        }
-
-        #wish-board .close-btn:hover {
-            background: rgba(90, 74, 66, 0.12);
-        }
-
+        /* รายการ Post-it */
         #wish-list {
-            max-height: 62vh;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
             overflow-y: auto;
-            padding-right: 8px;
+            height: 90%;
+            padding: 20px;
         }
 
-        .wish-item {
-            background: rgba(243, 235, 222, 0.9);
-            border-radius: 14px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(189, 174, 152, 0.7);
+        /* สไตล์แผ่น Post-it */
+        .post-it {
+            width: 120px;
+            height: 120px;
+            padding: 15px;
+            background: #ffeb3b;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+            font-family: 'Prompt', sans-serif;
         }
 
-        .wish-item .wish-name {
-            font-weight: 700;
-            color: #5a3a1f;
-            margin-bottom: 4px;
+        .post-it:hover {
+            transform: scale(1.1) rotate(0deg) !important;
+            z-index: 10;
         }
 
-        .wish-item .wish-text {
-            white-space: pre-wrap;
-            line-height: 1.5;
-            color: #45392e;
+        .post-it .wish-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+            word-break: break-word;
         }
 
-        .wish-item .wish-time {
-            font-size: 0.8rem;
-            color: #7a5b47;
-            margin-top: 8px;
+        /* ซ่อนข้อความยาวๆ ไว้ดูตอน Hover หรือ Click */
+        .post-it .wish-text-preview {
+            display: none; /* หากต้องการโชว์แค่ชื่อ */
+        }
+
+        .close-board-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            background: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            z-index: 1001;
         }
 
         #start-screen {
@@ -369,6 +383,27 @@
 
         .hidden { display: none !important; }
 
+        #open-wish-board {
+            position: fixed;
+            bottom: 18px;
+            right: 18px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            border: none;
+            font-size: 0.95rem;
+            background: rgba(90, 74, 66, 0.92);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            z-index: 1100;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        #open-wish-board:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(0,0,0,0.3);
+        }
+
         @media (max-width: 600px) {
             #character { height: 60%; bottom: 180px; }
             #dialogue-box { font-size: 1rem; padding: 35px 25px 20px 25px; }
@@ -412,17 +447,18 @@
         <button class="submit-btn" onclick="submitWish()">บันทึกลงสมุด 📋</button>
     </div>
 
-    <div id="wish-board" class="hidden" aria-hidden="true">
+    <div id="wish-board" class="hidden">
         <div class="board-card">
-            <div class="board-header">
-                <div class="board-title">คำอวยพรทั้งหมด</div>
-                <button class="close-btn" onclick="toggleWishBoard(false)">ปิด</button>
-            </div>
-            <div id="wish-list" aria-live="polite" role="log">
-                <p style="margin:0; color: #5a4a42; opacity: 0.8;">กำลังโหลดคำอวยพร...</p>
-            </div>
+            <button class="close-board-btn" onclick="toggleWishBoard(false)">✕</button>
+            <div class="board-title-container">📔 สมุดรวมคำอวยพร</div>
+            <div id="wish-list">
+                </div>
         </div>
     </div>
+
+    <button id="open-wish-board" type="button" aria-label="ดูหน้ารวมคำอวยพร" onclick="toggleWishBoard(true)">
+        📒 ดูคำอวยพร
+    </button>
 </div>
 
 <script>
@@ -591,23 +627,30 @@
     function renderWishes(wishes = []) {
         const container = document.getElementById('wish-list');
         if (!container) return;
+        
         if (!wishes.length) {
-            container.innerHTML = '<p style="margin:0;color:#5a4a42;opacity:0.8;">ยังไม่มีคำอวยพรเลย ลองเขียนคำอวยพรแรกกันนะ</p>';
+            container.innerHTML = '<p>ยังไม่มีคำอวยพร...</p>';
             return;
         }
-        const items = wishes
-            .slice()
-            .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-            .map(w => {
-                const time = w.timestamp ? formatTimestamp(w.timestamp) : '';
-                return `
-                    <div class="wish-item">
-                        <div class="wish-name">${w.name || 'ผู้เยี่ยมชม'}</div>
-                        <div class="wish-text">${w.wish || ''}</div>
-                        ${time ? `<div class="wish-time">${time}</div>` : ''}
-                    </div>
-                `;
-            });
+
+        // รายการสี Post-it แบบพาสเทล
+        const colors = ['#ff7eb9', '#ffffa5', '#a5f2f3', '#d8ffb1', '#ffc1ff', '#7afcff'];
+
+        const items = wishes.map(w => {
+            // สุ่มสีและองศาการเอียง (-5 ถึง 5 องศา)
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            const randomRotate = Math.floor(Math.random() * 10) - 5;
+
+            return `
+                <div class="post-it" 
+                     style="background-color: ${randomColor}; transform: rotate(${randomRotate}deg);"
+                     onclick="alert('ข้อความจาก ${w.name}: \\n${w.wish}')">
+                    <div class="wish-name">${w.name || 'Anonymous'}</div>
+                    <div style="font-size: 0.6rem; margin-top: 5px; opacity: 0.6;">คลิกเพื่ออ่าน</div>
+                </div>
+            `;
+        });
+        
         container.innerHTML = items.join('');
     }
 
