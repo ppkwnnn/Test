@@ -6,7 +6,7 @@
     <title>Warm Café Visual Novel - Birthday Special</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     <style>
         :root {
             --cafe-cream: #FDF5E6;
@@ -271,7 +271,22 @@
             overflow: hidden;
         }
 
-        /* รายการ Post-it */
+        .board-title-container {
+            position: absolute;
+            top: 5%; /* ขยับขึ้นไปด้านบน */
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Dancing Script', cursive; /* ใช้ฟอนต์ใหม่ */
+            font-size: clamp(2rem, 6vw, 3.5rem); /* ขยายขนาดให้ใหญ่ขึ้นตามหน้าจอ */
+            color: #5a4a42;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            z-index: 1002;
+            width: 100%;
+            text-align: center;
+            pointer-events: none; /* เพื่อไม่ให้ขวางการกดปุ่ม Close */
+        }
+
+        /* ปรับ Padding ของรายการ Post-it เพื่อไม่ให้ทับหัวข้อที่ขยับขึ้นไป */
         #wish-list {
             display: flex;
             flex-wrap: wrap;
@@ -279,7 +294,7 @@
             justify-content: center;
             overflow-y: auto;
             height: 100%;
-            padding: 20px;
+            padding: 80px 20px 20px;
             scrollbar-width: thin;
             scrollbar-color: #AD8350 transparent;
         }
@@ -579,8 +594,8 @@
     <div class="start-logo">🍵 Warm Café</div>
     
     <div class="menu-container">
-        <button class="menu-btn" onclick="startGame()">STORY</button>
-        <button class="menu-btn" onclick="toggleWishBoard(true)">WISHES</button>
+        <button class="menu-btn" onclick="startGame()">เริ่มเกมส์</button>
+        <button class="menu-btn" onclick="toggleWishBoard(true)">สมุดรวมคำอวยพร</button>
         <button class="menu-btn" onclick="showCredits()">CREDITS</button>
     </div>
 </div>
