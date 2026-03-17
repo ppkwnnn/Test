@@ -497,6 +497,57 @@
             box-shadow: 0 12px 22px rgba(0,0,0,0.3);
         }
 
+        #top-action-bar {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            z-index: 1200;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(255,255,255,0.92);
+            border-radius: 999px;
+            border: 1px solid rgba(90,74,66,0.35);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            padding: 4px;
+            display: none;
+        }
+
+        .top-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #f5e9df;
+            color: #5a4a42;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .top-action-btn:hover {
+            transform: scale(1.05);
+            background: #fff;
+        }
+
+        @media (max-width: 480px) {
+            #top-action-bar {
+                top: 8px;
+                right: 8px;
+                gap: 6px;
+                padding: 3px;
+            }
+            .top-action-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.95rem;
+            }
+        }
+
         @media (max-width: 600px) {
             #character {
                 height: 50%; /* ในมือถือลดตัวละครลงหน่อย */
@@ -570,9 +621,10 @@
         </div>
     </div>
 
-    <button id="open-wish-board" type="button" aria-label="ดูหน้ารวมคำอวยพร" onclick="toggleWishBoard(true)">
-        📒 ดูคำอวยพร
-    </button>
+    <div id="top-action-bar">
+        <button class="top-action-btn" id="restart-btn" title="Restart story">↻</button>
+        <button class="top-action-btn" id="wishbook-btn" title="Open greeting book">📖</button>
+    </div>
 </div>
 
 <div id="wish-modal" class="hidden" onclick="closeWishModal()">
@@ -594,6 +646,21 @@
 
     let selectedDrink = "";
     let isCharacterVisible = false;
+    let typeInterval;
+
+    function typeWriter(text) {
+        clearInterval(typeInterval);
+        textContent.innerText = "";
+        let i = 0;
+        typeInterval = setInterval(() => {
+            if (i < text.length) {
+                textContent.innerText += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(typeInterval);
+            }
+        }, 30); // ปรับความเร็วตรงนี้ (มิลลิวินาที)
+    }
 
     const story = {
         1: {
@@ -712,8 +779,8 @@
         if (stateKey == 5.1) {
             step.text = `สำหรับ '${selectedDrink}' แสดงว่าคุณเป็นคนใส่ใจในรายละเอียดและชอบความสุนทรีย์ในชีวิตนะครับ`;
         }
-        
-        textContent.innerText = step.text;
+
+        typeWriter(step.text);
 
         // Background transition
         if (step.bg) gameContainer.style.backgroundImage = `url('${step.bg}')`;
@@ -888,19 +955,45 @@
         }
     }
 
+    function showTopActionBar(show) {
+        const bar = document.getElementById('top-action-bar');
+        if (!bar) return;
+        bar.style.display = show ? 'flex' : 'none';
+    }
+
+    function restartGame() {
+        document.getElementById('start-screen').classList.remove('hidden');
+        dialogueBox.classList.add('hidden');
+        choiceContainer.innerHTML = '';
+        wishForm.style.display = 'none';
+        toggleWishBoard(false);
+        characterImg.style.opacity = '0';
+        characterImg.style.transform = 'translateY(20px)';
+        isCharacterVisible = false;
+        nameTag.innerText = '???';
+        textContent.innerText = '...';
+        showTopActionBar(false);
+    }
+
     function startGame() {
         // 1. ซ่อนหน้า Start Screen
         document.getElementById('start-screen').classList.add('hidden');
-        
+
         // 2. แสดงกล่องคำพูด (เอา hidden ออก)
         document.getElementById('dialogue-box').classList.remove('hidden');
-        
+
         // 3. เริ่มเนื้อเรื่องบทที่ 1
         updateGame(1);
-        
+
+        // 4. แสดงปุ่ม restart/book
+        showTopActionBar(true);
+
         // โหลดข้อมูลคำอวยพรรอไว้
         loadWishes();
     }
+
+    document.getElementById('restart-btn').addEventListener('click', restartGame);
+    document.getElementById('wishbook-btn').addEventListener('click', () => updateGame(9));
 
     // Initialize Game: show start screen first
     // updateGame(1) is called after pressing Start
