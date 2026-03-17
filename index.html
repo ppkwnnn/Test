@@ -6,7 +6,7 @@
     <title>Warm Café Visual Novel - Birthday Special</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mali:wght@600&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --cafe-cream: #FDF5E6;
@@ -45,11 +45,23 @@
         #character {
             position: absolute;
             bottom: 20vh; /* อิงความสูงจอ */
+            left: 50%;
+            transform: translate(-50%, 0);
             height: 65%;  /* ปรับความสูงให้พอดี */
             max-height: 600px;
             opacity: 0;
             transition: all 0.5s ease;
             z-index: 1;
+        }
+
+        #character.left-shift {
+            left: 18%;
+            transform: translate(0, 0);
+        }
+
+        #choice-container.right-shift {
+            left: 78%;
+            transform: translate(-50%, -50%);
         }
 
         /* --- Dialogue Box Style (ตามรูปตัวอย่าง) --- */
@@ -630,7 +642,7 @@
     <div id="wish-board" class="hidden">
         <div class="board-card">
             <button class="close-board-btn" onclick="toggleWishBoard(false)">✕</button>
-            <div class="board-title-container">📔 สมุดรวมคำอวยพร</div>
+            <div class="board-title-container">Wish from Heart</div>
             <div id="wish-list">
                 </div>
         </div>
@@ -785,7 +797,12 @@
         if (step.showChar) isCharacterVisible = true;
         if (stateKey === 1) isCharacterVisible = false; 
         characterImg.style.opacity = isCharacterVisible ? "1" : "0";
-        characterImg.style.transform = isCharacterVisible ? "translateY(0)" : "translateY(20px)";
+        characterImg.style.left = isCharacterVisible ? "50%" : "50%";
+        characterImg.style.transform = isCharacterVisible ? "translateX(-50%)" : "translateX(-50%) translateY(20px)";
+
+        // reset layout to center by default
+        choiceContainer.style.left = '50%';
+        choiceContainer.style.transform = 'translate(-50%, -50%)';
 
         // Update Text & Name
         nameTag.innerText = step.name;
@@ -806,7 +823,12 @@
             dialogueBox.classList.add('hidden');
         } 
         // Handle Choice Display
-        else if (step.choices) {
+        else if (step.choices && step.choices.length) {
+            // move scene for choice selection
+            characterImg.style.left = '18%';
+            choiceContainer.style.left = '78%';
+            choiceContainer.style.transform = 'translate(-50%, -50%)';
+
             step.choices.forEach(choice => {
                 const btn = document.createElement('div');
                 btn.className = 'choice-btn';
