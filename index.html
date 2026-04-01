@@ -695,7 +695,7 @@
     </div>
 
     <div id="download-container" class="hidden">
-        <button id="download-btn" class="download-btn" onclick="downloadWallpaper()">กดรับของขวัญ</button>
+        <button id="download-btn" class="download-btn" onclick="downloadWallpaper()">Press to automatically download the wallpaper</button>
     </div>
 
     <div id="wish-board" class="hidden">
@@ -735,6 +735,17 @@
     let selectedPastry = "";
     let isCharacterVisible = false;
     let typeInterval;
+
+    function getFortune(drink) {
+        const fortunes = {
+            "ลาเต้": "คุณเป็นคนอ่อนโยน ชอบความสบายใจเหมือนนมในลาเต้",
+            "คาปูชิโน่": "คุณเป็นคนช่างฝัน ละเมียดละไมเหมือนฟองนมคาปูชิโน่",
+            "อเมริกาโน่": "คุณเป็นคนตรงไปตรงมา เข้มแข็งเหมือนอเมริกาโน่",
+            "ช็อกโกแลต": "คุณเป็นคนมีเสน่ห์ ลึกลับแต่อบอุ่นเหมือนช็อกโกแลต",
+            "ชาผลไม้": "คุณเป็นคนร่าเริง รักอิสระเหมือนความสดชื่นของชาผลไม้"
+        };
+        return fortunes[drink] || "คุณเป็นคนพิเศษครับ";
+    }
 
     function typeWriter(text) {
         clearInterval(typeInterval);
@@ -860,7 +871,7 @@
     16: {
         text: "Y: \"ฟังดูน่าสนุกดีนะคะ อยากรู้เหมือนกันค่ะว่าเครื่องดื่มแก้วนี้จะบอกอะไรเกี่ยวกับตัวฉันบ้าง ลองทายดูสิคะ\"",
         name: "Y",
-        choices: [{ text: "KY: (เขายิ้มกว้างขึ้นเล็กน้อย ดูตื่นเต้นที่จะได้แชร์ความคิด) \"ได้เลยครับ ถ้าอย่างนั้น... สำหรับคนที่เลือก (ชื่อเครื่องดื่ม) บ่งบอกว่าคุณเป็นคนที่...\"", next: 18 }]
+        choices: [{ text: "KY: (เขายิ้มกว้างขึ้นเล็กน้อย ดูตื่นเต้นที่จะได้แชร์ความคิด) \"ได้เลยครับ ถ้าอย่างนั้น... สำหรับคนที่เลือก ${selectedDrink} บ่งบอกว่า ${getFortune(selectedDrink)}\"", next: 18 }]
     },
     17: {
         text: "Y: อืม... ไม่ดีกว่าค่ะ รู้สึกเขิน ๆ ยังไงไม่รู้ (คุณยิ้มแหย ๆ อย่างขัดเขิน)\"",
@@ -938,7 +949,7 @@
         name: "เคียวมุ",
         showDownload: true,
         choices: [
-            { text: "กดรับของขวัญ", next: 30 }
+            { text: "Press to automatically download the wallpaper", next: 30 }
         ]
     },
     30: {
@@ -1000,12 +1011,19 @@
         // Update Text & Name
         nameTag.innerText = step.name;
         
-        // Dynamic analysis for drink selection
-        if (stateKey == 5.1) {
-            step.text = `สำหรับ '${selectedDrink}' แสดงว่าคุณเป็นคนใส่ใจในรายละเอียดและชอบความสุนทรีย์ในชีวิตนะครับ`;
+        // Process template literals in text
+        let processedText = step.text;
+        if (processedText.includes('${selectedDrink}')) {
+            processedText = processedText.replace(/\$\{selectedDrink\}/g, selectedDrink);
         }
-
-        typeWriter(step.text);
+        if (processedText.includes('${selectedPastry}')) {
+            processedText = processedText.replace(/\$\{selectedPastry\}/g, selectedPastry);
+        }
+        if (processedText.includes('${getFortune(selectedDrink)}')) {
+            processedText = processedText.replace(/\$\{getFortune\(selectedDrink\)\}/g, getFortune(selectedDrink));
+        }
+        
+        typeWriter(processedText);
 
         // Background transition
         if (step.bg) gameContainer.style.backgroundImage = `url('${step.bg}')`;
