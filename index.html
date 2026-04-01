@@ -676,7 +676,7 @@
     </div>
 
     <div id="download-container" class="hidden">
-        <button id="download-btn" class="download-btn" onclick="downloadWallpaper()">ดาวน์โหลดวอลเปเปอร์ 🎨</button>
+        <button id="download-btn" class="download-btn" onclick="downloadWallpaper()">Press to automatically download the wallpaper</button>
     </div>
 
     <div id="wish-board" class="hidden">
@@ -1021,7 +1021,16 @@
     }
 
     function downloadWallpaper() {
-        window.open('https://drive.google.com/file/d/1usuFjRQLeLAOzhJjdD39ha70Za8ynkIF/view?usp=drive_link', '_blank');
+        // Create a temporary link element for download
+        const link = document.createElement('a');
+        link.href = 'https://drive.google.com/uc?export=download&id=1usuFjRQLeLAOzhJjdD39ha70Za8ynkIF';
+        link.download = 'wallpaper.jpg'; // Optional filename
+        link.target = '_blank'; // Open in new tab as fallback
+        
+        // Append to body, click, and remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     async function submitWish() {
