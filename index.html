@@ -3,313 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ละอองไออุ่น ถึงคุณคนโปรด | Gentle Steam, Dearly Belov'd</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>ละอองไออุ่น ถึงคุณคนโปรด</title>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cream: #FDFBF7;
-            --beige: #F5E6D3;
-            --soft-brown: #A67B5B;
-            --dark-brown: #5D4037;
-            --cozy-gray: #E0E0E0;
-            --nude: #D7B19D;
+            --cream: #FDFBF7; --beige: #F5E6D3; --brown: #A67B5B;
+            --dark: #5D4037; --nude: #D7B19D;
         }
-
         * { box-sizing: border-box; }
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            font-family: 'Mali', cursive;
-            background-color: var(--beige);
-            color: var(--dark-brown);
-            overflow: hidden;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Mali', cursive; overflow: hidden; background: #eee; }
 
-        /* Container หลัก */
-        .game-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #000;
-        }
-
+        /* ฉากทั้งหมด */
         .scene {
-            display: none;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            position: absolute;
-            top: 0; left: 0;
-            animation: fadeIn 1s;
+            display: none; width: 100%; height: 100vh; position: absolute;
+            background-size: cover; background-position: center; transition: 0.5s;
         }
+        .active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        .active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* UI เริ่มต้น */
-        #start-screen {
-            background-image: url('https://drive.google.com/uc?export=view&id=1qAg9r4VieXBG3c0vgIcSa4vwxiW9Wnw_');
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        /* หน้าแรก */
+        #start-screen { background-color: var(--beige); }
+        .logo { width: 250px; margin-bottom: 20px; border-radius: 20px; }
+        .btn {
+            background: var(--cream); color: var(--dark); border: 2px solid var(--brown);
+            padding: 12px 40px; margin: 10px; border-radius: 50px; cursor: pointer;
+            font-size: 1.1rem; font-family: 'Itim'; transition: 0.3s;
+            box-shadow: 0 4px 0 var(--brown);
         }
+        .btn:hover { transform: translateY(-3px); background: var(--brown); color: white; }
 
-        .logo { width: 300px; margin-bottom: 2rem; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); }
-
-        .menu-btn {
-            background-color: var(--cream);
-            color: var(--dark-brown);
-            border: 2px solid var(--nude);
-            padding: 12px 35px;
-            margin: 10px;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            font-family: 'Itim', cursive;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 0 var(--nude);
-        }
-
-        .menu-btn:hover { background-color: var(--nude); transform: translateY(-2px); }
-
-        .credit-btn {
-            position: absolute; top: 20px; right: 20px;
-            background: none; border: 1px solid var(--dark-brown);
-            padding: 5px 15px; border-radius: 15px; cursor: pointer;
-        }
-
-        /* ระบบสนทนา */
-        .character {
-            position: absolute; bottom: 0; left: 50%;
-            transform: translateX(-50%);
-            height: 80%; pointer-events: none;
-            transition: 0.5s;
-        }
-
+        /* ตัวละครและกล่องพูด */
+        .char-img { height: 75vh; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 1; pointer-events: none; }
         .dialog-box {
-            position: absolute; bottom: 30px; left: 50%;
-            transform: translateX(-50%);
-            width: 90%; max-width: 800px;
-            background: rgba(255, 253, 247, 0.95);
-            border: 4px solid var(--nude);
-            border-radius: 20px;
-            padding: 25px;
-            min-height: 150px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: absolute; bottom: 20px; width: 90%; max-width: 800px;
+            background: rgba(255, 255, 255, 0.95); border: 4px solid var(--brown);
+            border-radius: 20px; padding: 20px; z-index: 2; cursor: pointer;
         }
-
-        .speaker-name { font-weight: bold; font-size: 1.3rem; margin-bottom: 10px; color: var(--soft-brown); }
-
-        .choices { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-
-        .choice-btn {
-            background: var(--nude); color: white;
-            border: none; padding: 8px 20px; border-radius: 10px;
-            cursor: pointer; font-family: 'Mali', sans-serif;
-        }
-
-        /* ระบบเขียน Post-it */
-        .postit-system {
-            background: rgba(253, 251, 247, 0.9);
-            padding: 30px; border-radius: 20px; text-align: center;
-            width: 90%; max-width: 500px; margin: 50px auto;
-        }
-
-        .pattern-grid { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
-        .pattern-item { width: 60px; height: 60px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
-        .pattern-item.selected { border-color: var(--soft-brown); }
-
-        textarea { width: 100%; height: 100px; margin-top: 10px; border-radius: 10px; border: 1px solid var(--nude); padding: 10px; }
+        .name-tag { font-weight: bold; color: var(--brown); font-size: 1.3rem; margin-bottom: 5px; }
+        .choices { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .choice-btn { background: var(--nude); border: none; padding: 10px; border-radius: 10px; cursor: pointer; color: white; }
 
         /* บอร์ดคำอวยพร */
-        #board-scene { background-image: url('https://cache-igetweb-v2.mt108.info/uploads/images-cache/3114/product/1a86c7b4c87a6e23feaf6bfc562e19b0_full.png'); }
-        
-        .sticky-note {
-            width: 120px; height: 120px;
-            background: white; border-radius: 50%;
-            position: absolute; display: flex;
-            align-items: center; justify-content: center;
-            padding: 10px; text-align: center; font-size: 0.7rem;
-            box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
-            cursor: pointer; transition: 0.3s;
+        .board-container { position: relative; width: 100%; height: 100%; overflow: hidden; background: #d2b48c; }
+        .postit {
+            width: 130px; height: 130px; background: white; border-radius: 50%;
+            position: absolute; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 10px; font-size: 0.8rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer; border: 4px solid var(--beige);
         }
+
+        /* หน้าเขียน */
+        .write-form { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; }
+        .pattern-list img { width: 60px; height: 60px; margin: 5px; cursor: pointer; border-radius: 50%; border: 3px solid transparent; }
+        .pattern-list img.selected { border-color: var(--brown); }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <audio id="bgm" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-write"><source src="https://assets.mixkit.co/active_storage/sfx/2239/2239-preview.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-bell"><source src="https://assets.mixkit.co/active_storage/sfx/1066/1066-preview.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-cup"><source src="https://assets.mixkit.co/active_storage/sfx/2048/2048-preview.mp3" type="audio/mpeg"></audio>
+    <audio id="bgm" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+    <audio id="sfx-bell" src="https://assets.mixkit.co/active_storage/sfx/1066/1066-preview.mp3"></audio>
+    <audio id="sfx-cup" src="https://assets.mixkit.co/active_storage/sfx/2048/2048-preview.mp3"></audio>
 
-    <section id="start-screen" class="scene active">
-        <button class="credit-btn" onclick="alert('Credit: Art by Hoyoverse | Developed for you')">เครดิต</button>
-        <img src="https://drive.google.com/uc?export=view&id=1vwapg4i2lzLWafERRbm8jLkJe0TMusuI" class="logo" alt="Logo">
-        <button class="menu-btn" onclick="startGame()">เริ่มเกม</button>
-        <button class="menu-btn" onclick="openBoard()">ดูหน้ารวมคำอวยพร</button>
+    <section id="scene-start" class="scene active">
+        <img src="https://img5.pic.in.th/file/secure-sv1/ff800e08532c0bf6fd014e72e5ca81a4_8076081534056378253.png" class="logo" alt="Logo">
+        <h1>ละอองไออุ่น ถึงคุณคนโปรด</h1>
+        <button class="btn" onclick="startApp()">เริ่มเกม</button>
+        <button class="btn" onclick="viewBoard()">ดูคำอวยพร</button>
     </section>
 
-    <section id="game-scene" class="scene" style="background-image: url('https://drive.google.com/uc?export=view&id=1qAg9r4VieXBG3c0vgIcSa4vwxiW9Wnw_')">
-        <img id="char-img" src="https://webstatic.hoyoverse.com/upload/op-public/2021/03/31/ff800e08532c0bf6fd014e72e5ca81a4_8076081534056378253.png" class="character" style="display:none;">
-        <div class="dialog-box">
-            <div id="speaker" class="speaker-name">บรรยาย</div>
-            <div id="text-content">...</div>
-            <div id="choices" class="choices"></div>
+    <section id="scene-game" class="scene" style="background-color: #f9f1e7;">
+        <img id="kyomu-img" src="https://img5.pic.in.th/file/secure-sv1/ff800e08532c0bf6fd014e72e5ca81a4_8076081534056378253.png" class="char-img" style="display:none;">
+        <div class="dialog-box" id="dialog-box" onclick="nextLine()">
+            <div class="name-tag" id="speaker-name">บรรยาย</div>
+            <div id="dialog-text">กำลังโหลด...</div>
+            <div id="choice-area" class="choices"></div>
         </div>
     </section>
 
-    <section id="write-scene" class="scene">
-        <div class="postit-system">
+    <section id="scene-write" class="scene" style="background-color: var(--beige);">
+        <div class="write-form">
             <h3>The Latte Art Post-it</h3>
-            <p>เลือกลายที่ชอบและเขียนคำอวยพรให้เคียวมุ</p>
-            <div class="pattern-grid">
-                <img src="https://drive.google.com/uc?export=view&id=1kRJfQikzrztM-5SPeUxFvKoKkQOOt-hI" class="pattern-item" onclick="selectPattern(this, 'Heart')" title="Heart">
-                <img src="https://drive.google.com/uc?export=view&id=1zjZJcvIegaWh93h_0J7So9E8vSI_cuwL" class="pattern-item" onclick="selectPattern(this, 'Rosetta')" title="Rosetta">
-                <img src="https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu" class="pattern-item" onclick="selectPattern(this, 'Cat Paw')" title="Cat Paw">
-                <img src="https://drive.google.com/uc?export=view&id=1zjZJcvIegaWh93h_0J7So9E8vSI_cuwL" class="pattern-item" onclick="selectPattern(this, 'Star')" title="Star">
+            <div class="pattern-list">
+                <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" onclick="pickPatt(this, 'Heart')" title="Heart">
+                <img src="https://cdn-icons-png.flaticon.com/512/2926/2926214.png" onclick="pickPatt(this, 'Rosetta')" title="Rosetta">
+                <img src="https://cdn-icons-png.flaticon.com/512/616/616430.png" onclick="pickPatt(this, 'Cat Paw')" title="Cat Paw">
             </div>
-            <input type="text" id="user-name" placeholder="ชื่อของคุณ" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--nude);">
-            <textarea id="user-wish" placeholder="เขียนคำอวยพรที่นี่..." onfocus="playSFX('write')"></textarea>
-            <button class="menu-btn" onclick="submitWish()">ส่งข้อความ</button>
+            <input type="text" id="iname" placeholder="ชื่อของคุณ" style="width:100%; padding:10px; margin:10px 0;">
+            <textarea id="iwish" placeholder="เขียนคำอวยพร..." style="width:100%; height:80px; padding:10px;"></textarea>
+            <button class="btn" onclick="saveWish()">ส่งข้อความ & รับของขวัญ</button>
         </div>
     </section>
 
-    <section id="board-scene" class="scene">
-        <button class="menu-btn" style="position:fixed; top:10px; left:10px; z-index:100;" onclick="location.reload()">กลับหน้าหลัก</button>
-        <div id="board-container"></div>
+    <section id="scene-board" class="scene">
+        <div class="board-container" id="board-content"></div>
+        <button class="btn" style="position:fixed; bottom:10px; left:10px;" onclick="location.reload()">กลับหน้าหลัก</button>
     </section>
-</div>
 
 <script>
-    // --- Configuration ---
-    const DB_URL = "https://project-test01-49383-default-rtdb.firebaseio.com/wishes.json";
-    let selectedPattern = "";
-    let state = { drink: "", snack: "" };
+    const FIREBASE_URL = "https://project-test01-49383-default-rtdb.firebaseio.com/wishes.json";
+    let cur = 0;
+    let selectedPatt = "";
+    let data = { drink: "", snack: "" };
 
-    const story = {
-        1: { text: "หลังจากผ่านมรสุมความเหนื่อยล้ามาทั้งสัปดาห์ ในที่สุดวันหยุดที่เฝ้าฝันถึงก็มาถึงเสียที...", speaker: "บรรยาย", char: false, choices: [{t: "ถัดไป", n: 2}] },
-        2: { text: "คุณเดินผ่านร้านกาแฟเล็ก ๆ ร้านหนึ่ง มันดูเรียบง่าย แต่กลับให้ความรู้สึกอบอุ่นอย่างบอกไม่ถูก...", speaker: "บรรยาย", char: false, choices: [{t: "เข้าไปในร้าน", n: 4}, {t: "ไม่เข้าไป", n: 0}] },
-        4: { text: "กริ๊ง... กลิ่นกาแฟคั่วบดโอบล้อมตัวคุณไว้ราวกับกำลังปลอบประโลม บรรยากาศในร้านดีจัง... จะนั่งตรงไหนดีนะ?", speaker: "Y", char: false, choices: [{t: "เคาน์เตอร์ไม้", n: 5}, {t: "ริมหน้าต่าง", n: 5}, {t: "มุมในสุด", n: 5}] },
-        5: { text: "สวัสดีครับ... ไม่คุ้นหน้าเลย มาครั้งแรกหรือเปล่าครับ? รับเครื่องดื่มอะไรดีครับ?", speaker: "เคียวมุ", char: true, 
-             choices: [
-                {t: "ลาเต้", n: 5.1, act:()=>state.drink="ลาเต้"}, 
-                {t: "คาปูชิโน่", n: 5.1, act:()=>state.drink="คาปูชิโน่"},
-                {t: "ช็อกโกแลต", n: 5.1, act:()=>state.drink="ช็อกโกแลต"}
-             ] 
-        },
-        5.1: { text: "แล้วรับขนมทานคู่กันเพิ่มด้วยไหมครับ?", speaker: "เคียวมุ", char: true, 
-               choices: [
-                {t: "สตรอว์เบอร์รี่ช็อตเค้ก", n: 6, act:()=>state.snack="สตรอว์เบอร์รี่ช็อตเค้ก"},
-                {t: "ครัวซองต์", n: 6, act:()=>state.snack="ครัวซองต์"}
-               ] 
-        },
-        6: { text: "รอสักครู่นะครับ... (เวลาผ่านไป) นี่ครับ... ลองชิมดูสักนิดสิครับ ไม่ทราบว่ามันจะถูกปากคุณหรือเปล่า?", speaker: "เคียวมุ", char: true, choices: [{t: "ชิมดู", n: 6.1}] },
-        6.1: { text: "อร่อยมากเลยค่ะ! เคียวมุเล่าว่าวันนี้เป็นวันเกิดของเขาและเขาตั้งใจจะเลี้ยงมื้อนี้คุณ...", speaker: "บรรยาย", char: true, 
-               choices: [
-                {t: "สุขสันต์วันเกิดนะคะ! (เขียนคำอวยพร)", n: 10},
-                {t: "ขอบคุณมากนะใจดีจัง", n: 9}
-               ] 
-        },
-        9: { text: "ยินดีที่สุดครับ... พักผ่อนให้เต็มที่นะ ถ้ามีโอกาส... หวังว่าเราจะได้พบกันใหม่นะครับ", speaker: "เคียวมุ", char: true, choices: [{t: "จบเกม", n: 0}] },
-        10: { text: "คำอวยพรของคุณทำให้หัวใจของผมฟูขึ้นเยอะเลย... ช่วยเขียนลงในกระดาษโน้ตให้ผมหน่อยได้ไหมครับ?", speaker: "เคียวมุ", char: true, choices: [{t: "ตกลง", n: "WRITE"}] }
-    };
+    const script = [
+        { s: "บรรยาย", t: "หลังจากผ่านมรสุมความเหนื่อยล้ามาทั้งสัปดาห์... คุณจึงตัดสินใจก้าวเท้าออกจากบ้านเพื่อสูดอากาศบริสุทธิ์" },
+        { s: "บรรยาย", t: "คุณเดินผ่านร้านกาแฟเล็ก ๆ ร้านหนึ่ง มันดูเรียบง่ายแต่น่าดึงดูดใจอย่างบอกไม่ถูก..." },
+        { s: "Y", t: "อืมจะลองเข้าไปดีมั้ยนะ ?", choices: [
+            { t: "เข้าไปในร้าน", next: 3 },
+            { t: "ไม่เข้าไป", next: -1 }
+        ]},
+        { s: "บรรยาย", t: "กริ๊ง... กลิ่นกาแฟคั่วบดโอบล้อมตัวคุณไว้ราวกับกำลังปลอบประโลม บรรยากาศดีจัง นั่งตรงไหนดีนะ?" },
+        { s: "เคียวมุ", t: "สวัสดีครับ... มาครั้งแรกหรือเปล่าครับ? รับเครื่องดื่มอะไรดีครับ?", char: true, choices: [
+            { t: "ลาเต้", next: 5, act:()=>data.drink="ลาเต้" },
+            { t: "ช็อกโกแลต", next: 5, act:()=>data.drink="ช็อกโกแลต" }
+        ]},
+        { s: "เคียวมุ", t: "แล้วรับขนมทานคู่กันเพิ่มด้วยไหมครับ?", char: true, choices: [
+            { t: "สตรอว์เบอร์รี่ช็อตเค้ก", next: 6 },
+            { t: "ครัวซองต์", next: 6 }
+        ]},
+        { s: "เคียวมุ", t: "รู้ไหมครับ วันนี้เป็นวันเกิดของผมเอง ผมอยากเลี้ยงมื้อนี้คุณจัง...", char: true, choices: [
+            { t: "สุขสันต์วันเกิดนะ! (เขียนคำอวยพร)", next: 100 },
+            { t: "ใจดีจัง ขอบคุณนะ", next: 7 }
+        ]},
+        { s: "เคียว_มุ", t: "ขอบคุณที่แวะมานะครับ หวังว่าเราจะได้พบกันใหม่นะ", char: true, next: -1 }
+    ];
 
-    function startGame() {
+    function startApp() {
         document.getElementById('bgm').play();
-        showScene('game-scene');
-        renderStory(1);
+        go('scene-game');
+        render();
     }
 
-    function renderStory(id) {
-        if(id === 0) { location.reload(); return; }
-        if(id === "WRITE") { showScene('write-scene'); return; }
+    function render() {
+        if (cur === -1) { location.reload(); return; }
+        if (cur === 100) { go('scene-write'); return; }
 
-        const node = story[id];
-        document.getElementById('speaker').innerText = node.speaker;
-        document.getElementById('text-content').innerText = node.text;
-        document.getElementById('char-img').style.display = node.char ? 'block' : 'none';
+        const step = script[cur];
+        document.getElementById('speaker-name').innerText = step.s;
+        document.getElementById('dialog-text').innerText = step.t;
+        document.getElementById('kyomu-img').style.display = step.char ? 'block' : 'none';
         
-        const choicesDiv = document.getElementById('choices');
-        choicesDiv.innerHTML = '';
-        node.choices.forEach(c => {
-            const btn = document.createElement('button');
-            btn.className = 'choice-btn';
-            btn.innerText = c.t;
-            btn.onclick = () => { if(c.act) c.act(); renderStory(c.n); };
-            choicesDiv.appendChild(btn);
-        });
-    }
-
-    function selectPattern(el, name) {
-        document.querySelectorAll('.pattern-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedPattern = name;
-    }
-
-    function playSFX(id) {
-        document.getElementById('sfx-' + id).play();
-    }
-
-    async function submitWish() {
-        const name = document.getElementById('user-name').value;
-        const wish = document.getElementById('user-wish').value;
-        if(!name || !wish || !selectedPattern) return alert("กรุณากรอกข้อมูลและเลือกลายให้ครบถ้วนนะคะ");
-
-        playSFX('bell');
-        const data = { name, wish, pattern: selectedPattern, date: new Date().toISOString() };
-        
-        try {
-            await fetch(DB_URL, { method: 'POST', body: JSON.stringify(data) });
-            alert("เคียวมุได้รับคำอวยพรของคุณแล้ว! ขอบคุณที่มอบของขวัญที่พิเศษที่สุดให้เขานะคะ");
-            window.open('https://drive.google.com/file/d/1i-3rUS9Fc_UNuM1jPZJiWFdpT43HxEd-/view?usp=sharing', '_blank');
-            location.reload();
-        } catch (e) {
-            alert("ขออภัย ระบบขัดข้องเล็กน้อย แต่เคียวมุรับรู้ถึงความปรารถนาดีของคุณแล้วค่ะ");
-        }
-    }
-
-    async function openBoard() {
-        showScene('board-scene');
-        const container = document.getElementById('board-container');
-        container.innerHTML = 'กำลังโหลดคำอวยพร...';
-        
-        try {
-            const res = await fetch(DB_URL);
-            const data = await res.json();
-            container.innerHTML = '';
-            for(let key in data) {
-                const item = data[key];
-                const note = document.createElement('div');
-                note.className = 'sticky-note';
-                // สุ่มตำแหน่ง
-                note.style.left = Math.random() * 70 + 10 + '%';
-                note.style.top = Math.random() * 70 + 10 + '%';
-                note.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
-                note.innerHTML = `<strong>${item.name}</strong><br>${item.pattern}`;
-                note.onclick = () => {
-                    playSFX('cup');
-                    alert(`จากคุณ: ${item.name}\n\n"${item.wish}"`);
+        const area = document.getElementById('choice-area');
+        area.innerHTML = '';
+        if (step.choices) {
+            step.choices.forEach(c => {
+                const b = document.createElement('button');
+                b.className = 'choice-btn';
+                b.innerText = c.t;
+                b.onclick = (e) => { 
+                    e.stopPropagation(); 
+                    if(c.act) c.act();
+                    cur = c.next; 
+                    render(); 
                 };
-                container.appendChild(note);
-            }
-        } catch (e) {
-            container.innerHTML = 'ยังไม่มีคำอวยพรในขณะนี้';
+                area.appendChild(b);
+            });
         }
     }
 
-    function showScene(id) {
+    function nextLine() {
+        if (!script[cur].choices) {
+            cur++;
+            render();
+        }
+    }
+
+    function go(id) {
         document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
-</script>
 
+    function pickPatt(img, name) {
+        document.querySelectorAll('.pattern-list img').forEach(i => i.classList.remove('selected'));
+        img.classList.add('selected');
+        selectedPatt = name;
+    }
+
+    async function saveWish() {
+        const n = document.getElementById('iname').value;
+        const w = document.getElementById('iwish').value;
+        if (!n || !w || !selectedPatt) return alert("กรุณากรอกข้อมูลให้ครบจ้า");
+
+        const payload = { name: n, wish: w, pattern: selectedPatt, ts: Date.now() };
+        await fetch(FIREBASE_URL, { method: 'POST', body: JSON.stringify(payload) });
+        
+        document.getElementById('sfx-bell').play();
+        alert("ส่งคำอวยพรสำเร็จ! รับ Wallpaper เป็นของขวัญจากเคียวมุนะ");
+        window.open('https://drive.google.com/file/d/1i-3rUS9Fc_UNuM1jPZJiWFdpT43HxEd-/view?usp=sharing');
+        location.reload();
+    }
+
+    async function viewBoard() {
+        go('scene-board');
+        const res = await fetch(FIREBASE_URL);
+        const data = await res.json();
+        const cont = document.getElementById('board-content');
+        cont.innerHTML = '';
+        for (let id in data) {
+            const div = document.createElement('div');
+            div.className = 'postit';
+            div.style.left = (Math.random() * 70 + 5) + '%';
+            div.style.top = (Math.random() * 70 + 5) + '%';
+            div.style.transform = `rotate(${Math.random()*20-10}deg)`;
+            div.innerHTML = `<b>${data[id].name}</b><br>${data[id].pattern}`;
+            div.onclick = () => {
+                document.getElementById('sfx-cup').play();
+                alert(`"${data[id].wish}"\n- จาก ${data[id].name}`);
+            };
+            cont.appendChild(div);
+        }
+    }
+</script>
 </body>
 </html>
