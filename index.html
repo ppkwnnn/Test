@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ĭi<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -593,6 +593,48 @@
                 font-size: 0.65rem;
             }
         }
+
+        /* Download Button Styles */
+        #download-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 25;
+            text-align: center;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #f0c987, #e6b86a);
+            color: #5a4a42;
+            border: 3px solid #d4a76a;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(240, 201, 135, 0.4);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(135deg, #e6b86a, #d4a76a);
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 0 12px 35px rgba(240, 201, 135, 0.6);
+        }
+
+        .download-btn:active {
+            transform: scale(1.05) translateY(-1px);
+        }
+
+        @media (max-width: 600px) {
+            .download-btn {
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -633,6 +675,10 @@
         <button class="submit-btn" onclick="submitWish()">บันทึกลงสมุด 📋</button>
     </div>
 
+    <div id="download-container" class="hidden">
+        <button id="download-btn" class="download-btn" onclick="downloadWallpaper()">ดาวน์โหลดวอลเปเปอร์ 🎨</button>
+    </div>
+
     <div id="wish-board" class="hidden">
         <div class="board-card">
             <button class="close-board-btn" onclick="toggleWishBoard(false)">✕</button>
@@ -664,6 +710,7 @@
     const dialogueBox = document.getElementById('dialogue-box');
     const wishForm = document.getElementById('wish-form');
     const gameContainer = document.getElementById('game-container');
+    const downloadContainer = document.getElementById('download-container');
 
     let selectedDrink = "";
     let isCharacterVisible = false;
@@ -767,6 +814,14 @@
         name: "พนักงาน",
         showForm: true
     },
+    7.1: {
+        text: "ขอบคุณมากสำหรับคำอวยพรของคุณ! เพื่อเป็นการตอบแทน... ผมมีของขวัญพิเศษสำหรับคุณครับ 🎁 เป็นวอลเปเปอร์ที่ผมออกแบบเองเพื่อให้คุณได้ยิ้มทุกครั้งที่เห็นมัน",
+        name: "พนักงาน",
+        showDownload: true,
+        choices: [
+            { text: "ขอบคุณมาก! รับวอลเปเปอร์", next: 8 }
+        ]
+    },
     8: {
         text: "ลายมือของคุณสวยจัง... ผมจะเปิดอ่านทุกครั้งที่รู้สึกเหนื่อยเลยครับ ขอให้คุณมีวันที่วิเศษเหมือนกันนะ!",
         name: "พนักงาน",
@@ -795,6 +850,7 @@
         // Reset UI Components
         choiceContainer.innerHTML = '';
         wishForm.style.display = 'none';
+        downloadContainer.classList.add('hidden');
         dialogueBox.classList.remove('hidden');
 
         // Character Visibility Management
@@ -826,6 +882,10 @@
         if (step.showForm) {
             wishForm.style.display = 'block';
             dialogueBox.classList.add('hidden');
+        } 
+        // Handle Download Display
+        else if (step.showDownload) {
+            downloadContainer.classList.remove('hidden');
         } 
         // Handle Choice Display
         else if (step.choices && step.choices.length) {
@@ -960,8 +1020,8 @@
         }
     }
 
-    function showCredits() {
-        alert("Warm Café Visual Novel\nCreated with ❤️ for a Special Birthday\nArt & Code by: Gemini");
+    function downloadWallpaper() {
+        window.open('https://drive.google.com/drive/u/1/folders/1HYhMI08YKLxyGKHTzh7fI2snUqMz7uDN', '_blank');
     }
 
     async function submitWish() {
@@ -990,7 +1050,7 @@
             loadWishes();
             document.getElementById('user-name').value = '';
             document.getElementById('user-wish').value = '';
-            updateGame(8);
+            updateGame(7.1);
         } catch (err) {
             console.warn(err);
             alert('เกิดข้อผิดพลาดขณะบันทึก ลองอีกครั้งในภายหลัง');
