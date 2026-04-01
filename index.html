@@ -262,7 +262,7 @@
             width: 98%;
             height: 90vh;
             /* ใส่ Link รูปสมุดที่คุณส่งมา */
-            background-image: url('https://i.ibb.co/99ZQbx6V/IMG-7806.jpg'); 
+            background-image: url('https://cache-igetweb-v2.mt108.info/uploads/images-cache/3114/product/1a86c7b4c87a6e23feaf6bfc562e19b0_full.png'); 
             background-size: cover; /* ใช้ cover เพื่อให้รูปสมุดเต็มพื้นที่ */
             background-position: center;
             background-repeat: no-repeat;
@@ -428,7 +428,7 @@
             position: fixed;
             inset: 0;
             background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                        url('https://images.unsplash.com/photo-1509042239263-0219ca99738d?q=80&w=1974&auto=format&fit=crop');
+                        url('https://pin.it/6JrEft9Jh');
             background-size: cover;
             background-position: center;
             z-index: 999;
@@ -440,15 +440,34 @@
             box-sizing: border-box;
         }
 
+        .credits-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #5a4a42;
+            border: 2px solid rgba(90, 74, 66, 0.5);
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .credits-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.05);
+        }
+
         /* ปรับขนาดโลโก้ให้ยืดหยุ่นตามหน้าจอ */
         .start-logo {
-            font-size: clamp(2.5rem, 10vw, 5rem); /* ขนาดจะเปลี่ยนตามความกว้างจอ */
-            font-weight: 800;
-            color: white;
+            max-width: clamp(200px, 50vw, 400px); /* ขนาดจะเปลี่ยนตามความกว้างจอ */
+            height: auto;
             margin-bottom: 5vh; /* เว้นระยะล่าง 5% ของความสูงจอ */
             text-shadow: 0 4px 15px rgba(0,0,0,0.5);
             text-align: center;
-            line-height: 1.2;
         }
 
         /* ปุ่มเมนูเรียงเป็นแนวนอน แต่ถ้าจอแคบ (มือถือ) จะสลับเป็นแนวตั้ง */
@@ -640,12 +659,12 @@
 <body>
 
 <div id="start-screen">
-    <div class="start-logo">🍵 Warm Café</div>
+    <button class="credits-btn" onclick="showCredits()">CREDITS</button>
+    <img class="start-logo" src="https://img2.pic.in.th/3928.md.png" alt="Warm Café Logo">
     
     <div class="menu-container">
-        <button class="menu-btn" onclick="startGame()">เริ่มเกมส์</button>
-        <button class="menu-btn" onclick="toggleWishBoard(true)">สมุดรวมคำอวยพร</button>
-        <button class="menu-btn" onclick="showCredits()">CREDITS</button>
+        <button class="menu-btn" onclick="startGame()">เริ่มเกม</button>
+        <button class="menu-btn" onclick="toggleWishBoard(true)">ดูหน้ารวมคำอวยพร</button>
     </div>
 </div>
 
@@ -943,10 +962,13 @@
             const randomColor = earthToneColors[Math.floor(Math.random() * earthToneColors.length)];
             // สุ่มองศาการเอียงเล็กน้อยให้ดูเป็นธรรมชาติ
             const randomRotate = (Math.random() * 8 - 4).toFixed(2); 
+            // สุ่มตำแหน่งเล็กน้อยเพื่อให้ดูไม่นิ่ง
+            const randomMarginLeft = Math.floor(Math.random() * 20 - 10); // -10px to 10px
+            const randomMarginTop = Math.floor(Math.random() * 20 - 10); // -10px to 10px
 
             return `
                 <div class="post-it" 
-                     style="background-color: ${randomColor}; transform: rotate(${randomRotate}deg); border-left: 2px solid rgba(0,0,0,0.05);"
+                     style="background-color: ${randomColor}; transform: rotate(${randomRotate}deg); border-left: 2px solid rgba(0,0,0,0.05); margin-left: ${randomMarginLeft}px; margin-top: ${randomMarginTop}px;"
                      onclick="showWishDetail('${w.name}', '${w.wish.replace(/'/g, "\\'")}')">
                     <div class="wish-name">${w.name || 'Anonymous'}</div>
                     <div class="read-more-text">READ MORE</div>
@@ -1072,18 +1094,8 @@
         bar.style.display = show ? 'flex' : 'none';
     }
 
-    function restartGame() {
-        document.getElementById('start-screen').classList.remove('hidden');
-        dialogueBox.classList.add('hidden');
-        choiceContainer.innerHTML = '';
-        wishForm.style.display = 'none';
-        toggleWishBoard(false);
-        characterImg.style.opacity = '0';
-        characterImg.style.transform = 'translateY(20px)';
-        isCharacterVisible = false;
-        nameTag.innerText = '???';
-        textContent.innerText = '...';
-        showTopActionBar(false);
+    function showCredits() {
+        alert("Warm Café Visual Novel - Birthday Special\n\nDeveloped by: [Your Name]\n\nSpecial thanks to all the players!");
     }
 
     function startGame() {
