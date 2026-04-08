@@ -4,290 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Latte Art Post-it</title>
-    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --cozy-cream: #FFF9F0;
-            --cozy-beige: #F5E6CA;
-            --cozy-brown: #7D5A50;
-            --cozy-soft-white: #FEFBF6;
+            --cafe-brown: #7D5A50;
+            --cafe-beige: #F5E6CA;
+            --cafe-cream: #FFF9F0;
+            --card-bg: rgba(255, 249, 240, 0.9);
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Mali', cursive;
+            background-color: var(--cafe-cream);
             overflow: hidden;
-            background-color: var(--cozy-cream);
         }
 
-        /* การจัดการหน้าจอ */
         .screen {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            background-size: cover;
-            background-position: center;
+            display: none; width: 100%; height: 100vh;
+            background-size: cover; background-position: center;
+            justify-content: center; align-items: center;
             position: relative;
         }
 
-        .screen.active {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        .screen.active { display: flex; }
 
-        /* หน้าเริ่มเกม (Start Screen) */
-        #start-screen {
+        /* Background สำหรับหน้าเขียนคำอวยพร */
+        #game-screen {
             background-image: url('https://drive.google.com/uc?export=view&id=1qAg9r4VieXBG3c0vgIcSa4vwxiW9Wnw_');
         }
 
-        .overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            width: 80%;
-            max-width: 400px;
-            z-index: 2;
-            margin-bottom: 30px;
-            filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.2));
-        }
-
-        .menu-buttons {
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .menu-buttons button, .back-btn, .download-btn, #input-area button {
-            width: 220px;
-            padding: 12px;
-            border: none;
-            border-radius: 25px;
-            background-color: var(--cozy-beige);
-            color: var(--cozy-brown);
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: 'Itim', cursive;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .menu-buttons button:hover {
-            background-color: var(--cozy-brown);
-            color: white;
-            transform: translateY(-3px);
-        }
-
-        .credit-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid var(--cozy-brown);
-            background: white;
-            color: var(--cozy-brown);
-            font-size: 1.5rem;
-            cursor: pointer;
+        /* UI Card ตามรูปภาพที่แนบมา */
+        .ui-card {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            border-radius: 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
             z-index: 10;
         }
 
-        /* หน้าเขียนคำอวยพร (Gameplay) */
-        .character-container {
+        .card-title {
+            color: var(--cafe-brown);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Latte Art Selector */
+        .art-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .art-item {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .art-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            background: #E8D5C4;
+        }
+
+        .art-item input { display: none; }
+        .art-item input:checked + img {
+            border-color: var(--cafe-brown);
+            transform: scale(1.1);
+            background: #D4B499;
+        }
+
+        /* Preview Circle (วงกลมใหญ่ตรงกลาง) */
+        .preview-container {
+            width: 250px;
+            height: 250px;
+            background-color: #D4B499;
+            border-radius: 50%;
+            margin: 0 auto 25px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 8px solid #E8D5C4;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .preview-container::after {
+            content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 80vh;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.2); /* ฟุ้งๆ แบบฟองนม */
+            border-radius: 50%;
             pointer-events: none;
         }
 
-        .character {
-            height: 100%;
+        .input-overlay {
+            z-index: 2;
+            width: 80%;
         }
 
-        .dialogue-box {
-            position: absolute;
-            bottom: 30px;
-            width: 85%;
-            max-width: 700px;
-            background: rgba(255, 255, 255, 0.95);
-            border: 5px solid var(--cozy-beige);
-            border-radius: 25px;
-            padding: 25px;
+        .input-overlay input, .input-overlay textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
             text-align: center;
-            color: var(--cozy-brown);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            z-index: 5;
-        }
-
-        #input-area input, #input-area textarea {
-            width: 90%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid var(--cozy-beige);
-            border-radius: 10px;
             font-family: 'Mali', cursive;
+            color: #5D4037;
+            outline: none;
+            resize: none;
         }
 
-        .latte-art-selector {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
-        }
+        #user-name { font-weight: bold; font-size: 1.2rem; margin-bottom: 5px; }
+        #wish-text { font-size: 1rem; height: 60px; }
 
-        .latte-art-selector label {
+        /* ปุ่มแปะลงกระดาน */
+        .submit-btn {
+            background-color: var(--cafe-brown);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
             cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            transition: 0.2s;
+            font-family: 'Mali', cursive;
+            transition: 0.3s;
         }
 
-        .latte-art-selector input[type="radio"] { display: none; }
-        .latte-art-selector input[type="radio"]:checked + img {
-            border: 3px solid var(--cozy-brown);
-            border-radius: 50%;
-            background: var(--cozy-beige);
+        .submit-btn:hover {
+            background-color: #5D4037;
+            transform: translateY(-2px);
         }
 
-        /* บอร์ดคำอวยพร */
-        #board-screen {
-            background-image: url('https://cache-igetweb-v2.mt108.info/uploads/images-cache/3114/product/1a86c7b4c87a6e23feaf6bfc562e19b0_full.png');
-            overflow-y: auto;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 80px 20px;
+        /* Character */
+        .character-img {
+            position: absolute;
+            bottom: 0;
+            right: -50px;
+            height: 80vh;
+            z-index: 1;
+            filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.1));
         }
 
-        #post-it-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            max-width: 1000px;
-        }
-
-        .post-it {
-            width: 130px;
-            height: 130px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 3px 5px 15px rgba(0,0,0,0.15);
-            background-size: 70%;
-            background-repeat: no-repeat;
-            background-position: center;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .post-it:hover { transform: scale(1.15) rotate(5deg); }
-
-        .back-btn { position: fixed; top: 20px; left: 20px; width: 100px; z-index: 10; }
-
-        /* Modal Zoom-in */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center; align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: var(--cozy-soft-white);
-            padding: 40px;
-            border-radius: 50%;
-            width: 320px;
-            height: 320px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            border: 10px solid var(--cozy-beige);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
-
-        .download-btn {
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 10px;
-            background-color: #A3C9A8; /* สีเขียวอ่อนแบบ cozy */
-        }
+        /* ส่วนของหน้า Gift */
+        .gift-card { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="start-screen" class="screen active">
-        <div class="overlay"></div>
-        <button class="credit-btn" onclick="toggleCredits()">?</button>
-        <img src="https://drive.google.com/uc?export=view&id=1vwapg4i2lzLWafERRbm8jLkJe0TMusuI" class="logo" alt="Logo">
-        <div class="menu-buttons">
-            <button onclick="startGame()">เริ่มเกม</button>
-            <button onclick="showBoard()">ดูคำอวยพร</button>
-        </div>
-    </div>
+    <div id="game-screen" class="screen active">
+        
+        <img src="https://webstatic.hoyoverse.com/upload/op-public/2021/03/31/ff800e08532c0bf6fd014e72e5ca81a4_8076081534056378253.png" class="character-img">
 
-    <div id="game-screen" class="screen">
-        <div class="character-container">
-            <img src="https://webstatic.hoyoverse.com/upload/op-public/2021/03/31/ff800e08532c0bf6fd014e72e5ca81a4_8076081534056378253.png" class="character">
-        </div>
-        <div class="dialogue-box">
-            <p id="dialogue-text" style="font-size: 1.1rem; margin-bottom: 15px;">"ยินดีต้อนรับสู่คาเฟ่นะครับ... ช่วยเลือกอีกลายที่คุณชอบลงบน Post-it หน่อยนะ"</p>
+        <div class="ui-card" id="main-ui">
+            <div class="card-title">เลือกลายที่ชอบได้เลย</div>
             
-            <div id="input-area">
-                <input type="text" id="user-name" placeholder="ใส่ชื่อของคุณที่นี่">
-                <textarea id="wish-text" rows="3" placeholder="เขียนคำอวยพรวันเกิด..."></textarea>
-                
-                <div class="latte-art-selector">
-                    <label><input type="radio" name="art" value="Heart" checked> <img src="https://drive.google.com/uc?export=view&id=1kRJfQikzrztM-5SPeUxFvKoKkQOOt-hI" width="50" title="Heart"></label>
-                    <label><input type="radio" name="art" value="Rosetta"> <img src="https://drive.google.com/uc?export=view&id=1zjZJcvIegaWh93h_0J7So9E8vSI_cuwL" width="50" title="Rosetta"></label>
-                    <label><input type="radio" name="art" value="Cat Paw"> <img src="https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu" width="50" title="Cat Paw"></label>
-                    <label><input type="radio" name="art" value="Star"> <img src="https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu" width="50" title="Star"></label>
+            <div class="art-options">
+                <label class="art-item">
+                    <input type="radio" name="art" value="Heart" checked onchange="updatePreview(this.value)">
+                    <img src="https://drive.google.com/uc?export=view&id=1kRJfQikzrztM-5SPeUxFvKoKkQOOt-hI">
+                </label>
+                <label class="art-item">
+                    <input type="radio" name="art" value="Rosetta" onchange="updatePreview(this.value)">
+                    <img src="https://drive.google.com/uc?export=view&id=1zjZJcvIegaWh93h_0J7So9E8vSI_cuwL">
+                </label>
+                <label class="art-item">
+                    <input type="radio" name="art" value="Cat Paw" onchange="updatePreview(this.value)">
+                    <img src="https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu">
+                </label>
+                <label class="art-item">
+                    <input type="radio" name="art" value="Star" onchange="updatePreview(this.value)">
+                    <img src="https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu">
+                </label>
+            </div>
+
+            <div class="preview-container" id="latte-preview" style="background-image: url('https://drive.google.com/uc?export=view&id=1kRJfQikzrztM-5SPeUxFvKoKkQOOt-hI')">
+                <div class="input-overlay">
+                    <input type="text" id="user-name" placeholder="ชื่อ" maxlength="15">
+                    <textarea id="wish-text" placeholder="เขียนคำอวยพร" maxlength="100"></textarea>
                 </div>
-                
-                <button onclick="submitWish()">ส่งความรู้สึก</button>
             </div>
-            
-            <div id="gift-area" style="display:none;">
-                <p style="font-weight: bold; color: var(--cozy-brown);">"ขอบคุณมากนะครับสำหรับคำอวยพร นี่คือของขวัญเล็กๆ น้อยๆ จากผมครับ"</p>
-                <a href="https://drive.google.com/uc?export=download&id=1i-3rUS9Fc_UNuM1jPZJiWFdpT43HxEd-" target="_blank" class="download-btn">ดาวน์โหลด Wallpaper</a>
-                <br>
-                <button onclick="location.reload()" style="width: 150px; background: #ddd;">กลับหน้าหลัก</button>
-            </div>
+
+            <button class="submit-btn" onclick="submitWish()">แปะลงกระดาน</button>
         </div>
-    </div>
 
-    <div id="board-screen" class="screen">
-        <button class="back-btn" onclick="showStart()">← กลับ</button>
-        <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); z-index: 1;">The Latte Art Board</h2>
-        <div id="post-it-container"></div>
-    </div>
-
-    <div id="modal" class="modal" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <p id="modal-name" style="font-weight:bold; font-size: 1.2rem; color: var(--cozy-brown); margin-bottom: 5px;"></p>
-            <hr style="width: 50%; border: 0.5px solid var(--cozy-beige);">
-            <p id="modal-text" style="color: #555; line-height: 1.5;"></p>
-            <button onclick="closeModal()" style="margin-top: 15px; border: none; background: none; color: var(--cozy-brown); cursor: pointer;">ปิด</button>
+        <div class="ui-card gift-card" id="gift-ui">
+            <div class="card-title">Special gift for you</div>
+            <p style="color: var(--cafe-brown); margin-bottom: 20px;">ขอบคุณสำหรับคำอวยพรนะครับ<br>รับนี่ไปสิครับ...</p>
+            <a href="https://drive.google.com/uc?export=download&id=1i-3rUS9Fc_UNuM1jPZJiWFdpT43HxEd-" target="_blank">
+                <button class="submit-btn" style="background-color: #A3C9A8; margin-bottom: 15px;">ดาวน์โหลด Wallpaper</button>
+            </a>
+            <br>
+            <button onclick="location.reload()" style="background: none; border: none; color: #999; cursor: pointer;">กลับหน้าหลัก</button>
         </div>
     </div>
 
@@ -295,102 +214,41 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-        // --- 1. Firebase Config ---
-        const firebaseConfig = {
-            databaseURL: "https://project-test01-49383-default-rtdb.firebaseio.com/"
-        };
+        const firebaseConfig = { databaseURL: "https://project-test01-49383-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // --- 2. การเปลี่ยนหน้าจอ (Navigation) ---
-        function switchScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-            const target = document.getElementById(screenId);
-            target.style.display = (screenId === 'board-screen' || screenId === 'start-screen' || screenId === 'game-screen') ? 'flex' : 'none';
-            if(screenId === 'start-screen' || screenId === 'game-screen') {
-                target.classList.add('active');
-            }
+        // ฟังก์ชันเปลี่ยนรูปในวงกลม Preview
+        function updatePreview(val) {
+            const preview = document.getElementById('latte-preview');
+            let url = "";
+            if(val === "Heart") url = "https://drive.google.com/uc?export=view&id=1kRJfQikzrztM-5SPeUxFvKoKkQOOt-hI";
+            if(val === "Rosetta") url = "https://drive.google.com/uc?export=view&id=1zjZJcvIegaWh93h_0J7So9E8vSI_cuwL";
+            if(val === "Cat Paw") url = "https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu";
+            if(val === "Star") url = "https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu";
+            
+            preview.style.backgroundImage = `url('${url}')`;
         }
 
-        function startGame() { switchScreen('game-screen'); }
-        function showStart() { location.reload(); }
-        function showBoard() {
-            switchScreen('board-screen');
-            loadWishes();
-        }
-
-        // --- 3. ระบบส่งข้อมูล ---
         function submitWish() {
-            const name = document.getElementById('user-name').value.trim();
-            const text = document.getElementById('wish-text').value.trim();
+            const name = document.getElementById('user-name').value;
+            const text = document.getElementById('wish-text').value;
             const art = document.querySelector('input[name="art"]:checked').value;
 
-            if (!name || !text) {
-                alert("กรุณากรอกชื่อและคำอวยพรให้ครบถ้วนนะครับ");
+            if(!name || !text) {
+                alert("กรุณากรอกชื่อและข้อความก่อนนะครับ");
                 return;
             }
 
-            const wishData = {
+            database.ref('wishes').push({
                 name: name,
                 text: text,
                 art: art,
                 timestamp: Date.now()
-            };
-            
-            database.ref('wishes').push(wishData)
-                .then(() => {
-                    document.getElementById('input-area').style.display = 'none';
-                    document.getElementById('gift-area').style.display = 'block';
-                    document.getElementById('dialogue-text').style.display = 'none';
-                })
-                .catch(err => alert("เกิดข้อผิดพลาด: " + err.message));
-        }
-
-        // --- 4. ระบบดึงข้อมูลบอร์ด ---
-        function loadWishes() {
-            const container = document.getElementById('post-it-container');
-            container.innerHTML = '<p style="color: white;">กำลังรินกาแฟ...</p>';
-            
-            database.ref('wishes').on('value', (snapshot) => {
-                container.innerHTML = '';
-                if (!snapshot.exists()) {
-                    container.innerHTML = '<p style="color: white;">ยังไม่มีคำอวยพรในขณะนี้</p>';
-                    return;
-                }
-
-                snapshot.forEach((childSnapshot) => {
-                    const data = childSnapshot.val();
-                    const postIt = document.createElement('div');
-                    postIt.className = 'post-it';
-                    
-                    let artImg = "";
-                    switch(data.art) {
-                        case "Heart": artImg = "https://drive.google.com/uc?export=view&id=1kRJfQikzrztM-5SPeUxFvKoKkQOOt-hI"; break;
-                        case "Rosetta": artImg = "https://drive.google.com/uc?export=view&id=1zjZJcvIegaWh93h_0J7So9E8vSI_cuwL"; break;
-                        case "Cat Paw": artImg = "https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu"; break;
-                        case "Star": artImg = "https://drive.google.com/uc?export=view&id=1mnkyTZunwc6hTxdrYsHcOQZhby5TGgJu"; break;
-                    }
-
-                    postIt.style.backgroundImage = `url('${artImg}')`;
-                    postIt.onclick = () => openModal(data.name, data.text);
-                    container.appendChild(postIt);
-                });
+            }).then(() => {
+                document.getElementById('main-ui').style.display = 'none';
+                document.getElementById('gift-ui').style.display = 'block';
             });
-        }
-
-        // --- 5. ระบบ Modal (Zoom-in) ---
-        function openModal(name, text) {
-            document.getElementById('modal-name').innerText = "จาก: " + name;
-            document.getElementById('modal-text').innerText = text;
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-
-        function toggleCredits() {
-            alert("The Latte Art Post-it\nConcept: Cozy Cafe Simulation\nCharacter: Official Assets\nDeveloped for Birthday Celebration");
         }
     </script>
 </body>
