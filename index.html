@@ -198,7 +198,145 @@
             color: white;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        .story-screen {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+        }
+
+        .scene-header {
+            width: 100%;
+            text-align: center;
+            color: #5c3b2e;
+        }
+
+        .scene-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .scene-subtitle {
+            font-size: 1rem;
+            color: #836050;
+        }
+
+        .story-content {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .dialogue-box {
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            padding: 24px;
+            min-height: 220px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 0 10px 30px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .speaker-name {
+            color: #7a4f3b;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .dialogue-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4f3a31;
+            white-space: pre-wrap;
+        }
+
+        .choices {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(140px, 1fr));
+            gap: 14px;
+            justify-items: center;
+            margin-top: 10px;
+        }
+
+        .choice-btn {
+            width: 100%;
+            min-height: 50px;
+            padding: 12px 18px;
+            text-align: center;
+            border-radius: 20px;
+            background-color: #8b6f5d;
+            color: #fff;
+            font-size: 1rem;
+            border: none;
+        }
+
+        .choice-btn:hover {
+            background-color: #a27f68;
+        }
+
+        .continue-btn {
+            width: 200px;
+        }
+
+        .character-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255,255,255,0.94);
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+
+        .character-image {
+            width: 180px;
+            border-radius: 22px;
+            border: 4px solid rgba(255,255,255,0.85);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .character-name {
+            color: #5b3e2f;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
         /* การปรับแต่งสำหรับหน้าจอขนาดเล็ก (Mobile) */
+        @media (max-width: 850px) {
+            .story-screen {
+                max-width: 95%;
+            }
+            .story-content {
+                grid-template-columns: 1fr;
+            }
+            .choices {
+                grid-template-columns: 1fr;
+            }
+            .character-image {
+                width: 140px;
+            }
+        }
+
         @media (max-width: 600px) {
             .logo-container {
                 max-width: 90%; /* ให้โลโก้เล็กลงหน่อยบนมือถือ */
@@ -215,16 +353,40 @@
 </head>
 <body>
 
-    <div class="game-container">
+    <div class="game-container" id="gameContainer">
         <button class="credit-btn" onclick="toggleCredit()" title="ดูเครดิต">?</button>
 
-        <div class="logo-container">
-            <img src="https://img2.pic.in.th/-181_20260411152816.md.png" alt="Game Logo" class="logo">
+        <div id="homeScreen" class="home-screen">
+            <div class="logo-container">
+                <img src="https://img2.pic.in.th/-181_20260411152816.md.png" alt="Game Logo" class="logo">
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn btn-start" onclick="startGame()">START</button>
+                <button class="btn btn-wishboard" onclick="alert('Coming soon!')">Wishboard</button>
+            </div>
         </div>
 
-        <div class="menu-buttons">
-            <button class="btn btn-start" onclick="alert('Starting Game...')">START</button>
-            <button class="btn btn-wishboard" onclick="alert('Opening Wishboard...')">Wishboard</button>
+        <div id="storyScreen" class="story-screen hidden">
+            <div class="scene-header">
+                <div class="scene-title" id="sceneTitle">Story</div>
+                <div class="scene-subtitle" id="sceneSubtitle">Simulation / Visual Novel</div>
+            </div>
+
+            <div class="story-content">
+                <div class="character-panel hidden" id="characterPanel">
+                    <img id="characterImage" class="character-image" src="https://img2.pic.in.th/-182_20260411164509.md.png" alt="Kyo Mu">
+                    <div class="character-name">เคียวมุ</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name" id="speakerName">Narrator</div>
+                    <div class="dialogue-text" id="dialogueText"></div>
+                </div>
+            </div>
+
+            <div class="choices" id="choiceContainer"></div>
+            <button id="continueBtn" class="btn btn-start continue-btn hidden" onclick="continueScene()">ต่อไป</button>
         </div>
 
         <div id="creditOverlay" class="overlay" onclick="closeOverlay(event)">
@@ -243,13 +405,316 @@
     </div>
 
     <script>
-        // ฟังก์ชัน เปิด-ปิด หน้า Credit
+        const story = {
+            scene1: {
+                title: 'ฉาก 1',
+                bg: 'https://img2.pic.in.th/IMG_7826.md.jpeg',
+                lines: [
+                    'หลังจากผ่านมรสุมความเหนื่อยล้ามาทั้งสัปดาห์ในที่สุดวันหยุดที่เฝ้าฝันถึงเสียที',
+                    'คุณไม่อยากปล่อยให้เวลาอันมีค่านี้หมดไปกับการนอนซึมอยู่บนเตียง จึงตัดสินใจก้าวเท้าออกจากบ้านเพื่อสูดอากาศบริสุทธิ์',
+                    'แสงแดดอ่อน ๆ ยามเช้าชวนให้รู้สึกดีไม่น้อย แต่สิ่งเดียวที่ขาดไปในตอนนี้คือเครื่องดื่มดี ๆ สักแก้วที่จะมาเติมเต็มในวันหยุดของคุณ'
+                ],
+                speaker: 'บรรยาย',
+                choices: []
+            },
+            scene2: {
+                title: 'ฉาก 2',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                lines: [
+                    'คุณเดินผ่านย่านการค้าที่คึกคัก ร้านค้าเรียงรายมากมายอยู่ตามข้างทาง แต่กลับไม่มีร้านไหนที่ดึงดูดใจคุณได้เลย',
+                    'จนกระทั่ง ขาของคุณหยุดชะงักลงที่หน้าร้านกาแฟเล็ก ๆ ร้านหนึ่ง มันดูเรียบง่าย ไม่ได้หวือหวา แต่มันกลับให้ความรู้สึกอบอุ่นอย่างบอกไม่ถูก',
+                    'กลิ่นหอมจาง ๆ ของเมล็ดกาแฟที่ลอยมาแตะจมูก ชวนให้คุณนึกถึงความทรงจำเก่า ๆ ที่เกือบจะลืมเลือนไป',
+                    'ความรู้สึกชวนให้คิดถึงบางอย่างหรือใครบางคนที่ไม่ได้เจอมานาน ยืนมองอยู่หน้าร้านอยู่สักพักกำลังตัดสินใจว่าจะเข้าไปดีไหม'
+                ],
+                speaker: 'บรรยาย',
+                choices: [
+                    { text: 'เข้าไปในร้าน', next: 'scene3' },
+                    { text: 'ไม่เข้าไป', next: 'home' }
+                ]
+            },
+            scene3: {
+                title: 'ฉาก 3',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                lines: [
+                    'ทันทีที่คุณผลักประตูเข้าไป เสียงกระดิ่งทองเหลืองเหนือหัวก็ดัง กรุ๊งกริ๊ง ต้อนรับอย่างสดใส',
+                    'กลิ่นกาแฟคั่วบดโอบล้อมตัวคุณไว้ราวกับกำลังปลอบประโลม',
+                    'บรรยากาศในร้านดีจัง... จะนั่งตรงไหนดีนะ?'
+                ],
+                speaker: 'Y',
+                choices: [
+                    { text: 'นั่งตรงเคาน์เตอร์ไม้ อยากดูวิธีชงเครื่องดื่ม', next: 'scene5' },
+                    { text: 'นั่งริมหน้าต่าง มองดูผู้คนเดินผ่านไปมา', next: 'scene5' },
+                    { text: 'นั่งมุมในสุดของร้าน อยากได้ความเป็นส่วนตัว', next: 'scene5' }
+                ]
+            },
+            scene5: {
+                title: 'ฉาก 5',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                showCharacter: true,
+                lines: [
+                    'ในขณะที่คุณกำลังหย่อนตัวลงนั่ง ก็มีเสียงทักทายขึ้นเป็นเสียงที่นุ่มนวล คุณเงยหน้าขึ้นมาพบกับชายหนุ่มที่กำลังส่งยิ้มให้ด้วยสายตาที่อ่อนโยน',
+                    'สวัสดีครับ... ไม่คุ้นหน้าเลย มาครั้งแรกหรือเปล่าครับ?',
+                    'อ่อค่ะ ใช่ค่ะ เพิ่งเคยมาครั้งแรกเลย ร้านตกแต่งสวยจังเลยนะคะ',
+                    'ขอบคุณนะครับ ผม เคียวมุ ครับ ยินดีที่ได้รู้จักและยินดีต้อนรับสู่พื้นที่เล็ก ๆ ของผมนะครับ... วันนี้ดูท่าทางจะเหนื่อยมาพอสมควรเลย รับเครื่องดื่มอะไรดีครับ?'
+                ],
+                speaker: 'KY',
+                choices: [
+                    { text: 'ลาเต้', next: 'drinkHotCold', extra: 'ลาเต้' },
+                    { text: 'คาปูชิโน่', next: 'drinkHotCold', extra: 'คาปูชิโน่' },
+                    { text: 'อเมริกาโน่', next: 'drinkHotCold', extra: 'อเมริกาโน่' },
+                    { text: 'ช็อกโกแลต', next: 'drinkHotCold', extra: 'ช็อกโกแลต' },
+                    { text: 'ชาผลไม้', next: 'drinkHotCold', extra: 'ชาผลไม้' }
+                ]
+            },
+            drinkHotCold: {
+                title: 'เลือกอุณหภูมิ',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                lines: [
+                    'เมนูนี้ดีเลยนะครับ แล้วอยากรับเป็นแบบร้อนหรือเย็นดีครับ?'
+                ],
+                speaker: 'KY',
+                choices: [
+                    { text: 'แบบร้อน', next: 'chooseDessert', extra: 'ร้อน' },
+                    { text: 'แบบเย็น', next: 'chooseDessert', extra: 'เย็น' }
+                ]
+            },
+            chooseDessert: {
+                title: 'เลือกของหวาน',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                lines: [
+                    'ได้เลยครับ...แล้วรับขนมทานคู่กันทานเพิ่มด้วยไหมครับ??'
+                ],
+                speaker: 'KY',
+                choices: [
+                    { text: 'สตอเบอร์รี่ช๊อตเค้ก', next: 'scene6', extra: 'สตอเบอร์รี่ช๊อตเค้ก' },
+                    { text: 'บลูชีสพาย', next: 'scene6', extra: 'บลูชีสพาย' },
+                    { text: 'ครัวซองต์', next: 'scene6', extra: 'ครัวซองต์' },
+                    { text: 'โดนัทช็อกโกแลต', next: 'scene6', extra: 'โดนัทช็อกโกแลต' },
+                    { text: 'แซนวิช', next: 'scene6', extra: 'แซนวิช' }
+                ]
+            },
+            scene6: {
+                title: 'ฉาก 6',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                showCharacter: true,
+                lines: [
+                    'เวลาผ่านไปเพียงไม่นาน กลิ่นหอมกรุ่นที่แสนคุ้นเคยก็ลอยมาแตะจมูก เคียวมุเดินออกมาจากหลังเคาน์เตอร์พร้อมถาดไม้ที่เต็มไปด้วยของที่คุณสั่ง',
+                    'ขออนุญาตนะครับ (ชื่อน้ำ) กับ (ชื่อขนม) ได้แล้วครับ (เขาบรรจงวางมันลงตรงหน้าคุณอย่างเบามือ)',
+                    'น่าทานจังเลยค่ะ... ขอบคุณมากนะคะ',
+                    '(เขายืนกอดถอดไม้ไว้แนบอกมองดูคุณด้วยสายตาที่ลุ้นเล็กน้อย) ลองชิมดูสักนิดสิครับ...ไม่ทราบว่ามันจะถูกปากคุณหรือเปล่า?',
+                    '(คุณจิบเครื่องดื่มเข้าไปเพียงนิด รสสัมผัสที่กลมกล่อมก็กระจายไปทั่ว) อร่อย... อร่อยมากเลยค่ะ หวานกำลังดี แล้วก็นุ่มละมุนมาก ๆ เลย',
+                    '(เขาถอนหายใจออกมาเบา ๆ อย่างโล่งอก) ดีใจที่ชอบนะครับ... รู้ไหมครับ มีคนบอกว่าเครื่องดื่มที่เราเลือกน่ะ มักจะสะท้อน ตัวตน ของคนดื่มออกมาด้วยนะ... สนใจอยากลองฟังคำทำนายเล่น ๆ จากบาริสต้าคนนี้ดูไหมครับ?'
+                ],
+                speaker: 'KY',
+                choices: [
+                    { text: 'อยากฟังค่ะ ลองทายดูสิคะ', next: 'scene7' },
+                    { text: 'อืม... ไม่ดีกว่าค่ะ รู้สึกเขิน ๆ ยังไงไม่รู้', next: 'scene8' }
+                ]
+            },
+            scene7: {
+                title: 'ฉาก 7',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                showCharacter: true,
+                lines: [
+                    'ฟังดูน่าสนุกดีนะคะ อยากรู้เหมือนกันค่ะว่าเครื่องดื่มแก้วนี้จะบอกอะไรเกี่ยวกับตัวฉันบ้าง ลองทายดูสิคะ',
+                    'ได้เลยครับ ถ้าอย่างนั้น... สำหรับคนที่เลือก (ชื่อเครื่องดื่ม) บ่งบอกว่าคุณเป็นคนที่...',
+                    'โห... แอบแม่นจนน่าตกใจเลยนะคะเนี่ย (คุณพูดพร้อมหัวเราะเบา ๆ สายตาดูผ่อนคลายขึ้นมาก)',
+                    'ฮะฮะ จริงเหรอครับ? สงสัยผมจะทายถูกเพราะเห็นรอยยิ้มของคุณแน่เลย',
+                    'อ้อ จริงสิ สำหรับมื้อนี้ ผมตั้งใจจะเลี้ยงคุณเองนะครับ',
+                    'เอ๋? จะดีเหรอคะ? มาครั้งแรกแท้ ๆ ทำไมถึงใจดีแบบนี้ล่ะคะ?',
+                    '(เขาชะงักไปครู่หนึ่ง ก่อนจะระบายยิ้มออกมา เป็นยิ้มที่ดูผ่อนคลายและจริงใจที่สุดเท่าที่คุณเห็นมาตั้งแต่เดินเข้าร้านมา)',
+                    '(เขาลูบท้ายทอยตัวเองเล็กน้อยด้วยท่าทางขัดเขิน แต่แววตากลับเปล่งประกาย) เพราะว่าวันนี้เป็นวันเกิดของผมเองน่ะครับ... ผมแค่อยากให้คนชิมกาแฟของผมมีความสุขที่สุด และคุณเองก็ทำให้วันเกิดปีนี้ของผมเริ่มได้อย่างสวยงามน่ะครับ'
+                ],
+                speaker: 'Y',
+                choices: [
+                    { text: 'จริงเหรอคะเนี่ย! สุขสันต์วันเกิดนะคะ', next: 'scene10' },
+                    { text: 'จริงเหรอคะ... ขอบคุณมากเลยนะใจดีจัง', next: 'scene9' }
+                ]
+            },
+            scene8: {
+                title: 'ฉาก 8',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                showCharacter: true,
+                lines: [
+                    'อืม... ไม่ดีกว่าค่ะ รู้สึกเขิน ๆ ยังไงไม่รู้ (คุณยิ้มแหย ๆ อย่างขัดเขิน)',
+                    'ฮะฮะ ขอโทษทีครับ ผมคงดูรุกรานความเป็นส่วนตัวคุณไปหน่อยสินะ ไม่เป็นไรครับ ทานให้อร่อยนะครับ ผมแค่อยากให้คุณได้พักผ่อนจริง ๆ',
+                    'ถึงจะไม่ได้ฟังคำทำนาย แต่บรรยากาศระหว่างคุณกับเขาก็ยังคงอบอุ่น เคียวมุคอยดูแลอยู่ห่าง ๆ จนกระทั่งถึงตอนที่คุณกำลังจะเช็คบิล...',
+                    'อ้อ จริงสิครับ... ก่อนจะกลับ ผมขออนุญาตเลี้ยงมื้อนี้คุณนะครับ ไม่คิดค่าใช้จ่ายเลย',
+                    'เอ๋? จะดีเหรอคะ? ทำไมละคะ?',
+                    'เพราะว่าวันนี้เป็นวันเกิดของผมเองน่ะครับ... ผมแค่อยากให้คนชิมกาแฟของผมมีความสุขที่สุด ขอบคุณที่แวะมาหาผมในวันนี้ที่เป็นวันพิเศษของผมนะครับ'
+                ],
+                speaker: 'KY',
+                choices: [
+                    { text: 'จริงเหรอคะเนี่ย! สุขสันต์วันเกิดนะคะ', next: 'scene10' },
+                    { text: 'จริงเหรอคะ... ขอบคุณมากเลยนะใจดีจัง', next: 'scene9' }
+                ]
+            },
+            scene9: {
+                title: 'บทส่งท้าย 1',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                showCharacter: true,
+                lines: [
+                    'จริงเหรอคะ... ขอบคุณมากเลยนะใจดีจัง สุขสันต์วันเกิดนะคะ ขอให้ร้านนี้มีแต่คนรักและอบอุ่นแบบนี้ตลอดไปเลยนะ',
+                    'ยินดีที่สุดครับ... ขอบคุณที่คุณมาร่วมทำให้วันเกิดของผมมีความหมายขึ้นนะครับ',
+                    'ทานให้อร่อยนะครับ ไม่ต้องรีบ... พักผ่อนให้เต็มที่ในวันหยุดของคุณนะ ถ้ามีโอกาส... หวังว่าเราจะได้พบกันใหม่นะครับ'
+                ],
+                speaker: 'KY',
+                choices: [
+                    { text: 'จบบทส่งท้าย', next: 'end' }
+                ]
+            },
+            scene10: {
+                title: 'บทส่งท้าย 2',
+                bg: 'https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg',
+                showCharacter: true,
+                lines: [
+                    'จริงเหรอคะเนี่ย! สุขสันต์วันเกิดนะคะ ดีใจจังที่ได้มาฉลองเป็นคนแรก ๆ ของวัน ขอให้ปีนี้เป็นปีที่ยอดเยี่ยมและมีความสุขมาก ๆ นะคะ',
+                    'ขอบคุณมากนะครับ... คำอวยพรของคุณทำให้หัวใจของผมฟูขึ้นเยอะเลย',
+                    'ถ้าคุณไม่รังเกียจ...คุณช่วยเขียนคำอวยพรทิ้งไว้ให้ผมหน่อยได้ไหมครับ? ผมอยากเก็บความทรงจำดี ๆ จากลูกค้าทุกคนไว้... โดยเฉพาะจากคุณ',
+                    'นี่ครับ... เลือกลายที่ชอบได้เลยนะ ไม่ต้องเกร็งครับ เขียนอะไรก็ได้ที่อยากบอกผม... ผมจะเก็บรักษามันไว้อย่างดีเลย'
+                ],
+                speaker: 'KY',
+                choices: [
+                    { text: 'จบบทส่งท้าย', next: 'end' }
+                ]
+            }
+        };
+
+        const state = {
+            currentScene: 'scene1',
+            lineIndex: 0,
+            drink: '',
+            temperature: '',
+            dessert: ''
+        };
+
+        const gameContainer = document.getElementById('gameContainer');
+        const homeScreen = document.getElementById('homeScreen');
+        const storyScreen = document.getElementById('storyScreen');
+        const dialogueText = document.getElementById('dialogueText');
+        const speakerName = document.getElementById('speakerName');
+        const sceneTitle = document.getElementById('sceneTitle');
+        const sceneSubtitle = document.getElementById('sceneSubtitle');
+        const choiceContainer = document.getElementById('choiceContainer');
+        const continueBtn = document.getElementById('continueBtn');
+        const characterPanel = document.getElementById('characterPanel');
+        const characterImage = document.getElementById('characterImage');
+
+        function startGame() {
+            homeScreen.classList.add('hidden');
+            storyScreen.classList.remove('hidden');
+            loadScene('scene1');
+        }
+
+        function loadScene(sceneKey) {
+            if (sceneKey === 'home') {
+                homeScreen.classList.remove('hidden');
+                storyScreen.classList.add('hidden');
+                return;
+            }
+
+            const scene = story[sceneKey];
+            state.currentScene = sceneKey;
+            state.lineIndex = 0;
+            sceneTitle.textContent = scene.title;
+            speakerName.textContent = scene.speaker || 'Narrator';
+            characterPanel.classList.toggle('hidden', !scene.showCharacter);
+            gameContainer.style.backgroundImage = `url('${scene.bg}')`;
+            renderLine();
+        }
+
+        function renderLine() {
+            const scene = story[state.currentScene];
+            dialogueText.textContent = scene.lines[state.lineIndex];
+            speakerName.textContent = scene.speaker || 'Narrator';
+            const isLastLine = state.lineIndex === scene.lines.length - 1;
+            if (isLastLine) {
+                if (scene.choices.length > 0) {
+                    continueBtn.classList.add('hidden');
+                    renderChoices(scene.choices);
+                } else {
+                    continueBtn.classList.remove('hidden');
+                    choiceContainer.innerHTML = '';
+                }
+            } else {
+                continueBtn.classList.remove('hidden');
+                choiceContainer.innerHTML = '';
+            }
+        }
+
+        function continueScene() {
+            const scene = story[state.currentScene];
+            if (state.lineIndex < scene.lines.length - 1) {
+                state.lineIndex += 1;
+                renderLine();
+                return;
+            }
+            if (scene.choices.length > 0) {
+                renderChoices(scene.choices);
+                continueBtn.classList.add('hidden');
+            } else {
+                const next = state.currentScene === 'scene1' ? 'scene2' : 'end';
+                if (next === 'end') {
+                    dialogueText.textContent = 'ขอบคุณที่เล่นเกมนี้ครับ!';
+                } else {
+                    loadScene(next);
+                }
+            }
+        }
+
+        function renderChoices(choices) {
+            choiceContainer.innerHTML = '';
+            choices.forEach((choice, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-wishboard choice-btn';
+                btn.textContent = choice.text;
+                btn.onclick = () => selectChoice(choice);
+                choiceContainer.appendChild(btn);
+            });
+        }
+
+        function selectChoice(choice) {
+            if (choice.extra) {
+                const nextScene = state.currentScene;
+                if (story[state.currentScene].title === 'ฉาก 5') {
+                    state.drink = choice.extra;
+                }
+                if (state.currentScene === 'drinkHotCold') {
+                    state.temperature = choice.extra;
+                }
+                if (state.currentScene === 'chooseDessert') {
+                    state.dessert = choice.extra;
+                }
+            }
+
+            let next = choice.next;
+            if (next === 'scene6' && state.drink && state.temperature && state.dessert) {
+                const scene6 = story.scene6;
+                scene6.lines = scene6.lines.map(line => line.replace('(ชื่อน้ำ)', `${state.drink} ${state.temperature}`).replace('(ชื่อขนม)', state.dessert));
+            }
+            if (next === 'scene7') {
+                const scene7 = story.scene7;
+                scene7.lines = scene7.lines.map(line => line.replace('(ชื่อเครื่องดื่ม)', `${state.drink} ${state.temperature}`));
+            }
+            if (next === 'scene10') {
+                const scene10 = story.scene10;
+                scene10.lines = scene10.lines.map(line => line.replace('(ชื่อน้ำ)', `${state.drink} ${state.temperature}`).replace('(ชื่อขนม)', state.dessert));
+            }
+
+            if (next === 'end') {
+                dialogueText.textContent = 'เรื่องราวจบลงแล้ว ขอบคุณที่เล่น!';
+                choiceContainer.innerHTML = '';
+                continueBtn.classList.remove('hidden');
+                return;
+            }
+            loadScene(next);
+        }
+
         function toggleCredit() {
             const overlay = document.getElementById('creditOverlay');
             overlay.classList.toggle('active');
         }
 
-        // ปิด Credit เมื่อคลิกพื้นที่ว่างรอบๆ การ์ด
         function closeOverlay(event) {
             if (event.target.id === 'creditOverlay') {
                 toggleCredit();
