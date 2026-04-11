@@ -3,334 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozy Cafe - Birthday Wish</title>
+    <title>Visual Novel Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fahkwang:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --cafe-beige: #F5EBE0;
-            --cafe-brown: #D5BDAF;
-            --cafe-dark: #8E7D71;
-        }
-        body {
-            font-family: 'Mali', cursive;
-            background-color: var(--cafe-beige);
-            margin: 0;
-            overflow: hidden;
-        }
-        .screen { display: none; height: 100vh; width: 100vw; position: relative; }
-        .active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
-        /* สไตล์หน้าแรก */
-        #start-screen {
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
-                        url('https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .btn-cafe {
-            background-color: #fff;
-            color: var(--cafe-dark);
-            padding: 12px 30px;
-            border-radius: 50px;
-            margin: 10px;
-            font-weight: bold;
-            transition: 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .btn-cafe:hover { transform: scale(1.05); background-color: var(--cafe-brown); color: white; }
-
-        /* ตัวละคร */
-        .character {
-            position: absolute;
-            bottom: 0;
-            right: 10%;
-            height: 80vh;
-            z-index: 10;
-        }
-
-        /* Post-it Design */
-        .post-it-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: white;
-            border: 4px solid var(--cafe-brown);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .post-it-preview.selected { border-color: #8E7D71; box-shadow: 0 0 15px rgba(142, 125, 113, 0.5); }
-        .post-it-image { width: 60%; height: 60%; object-fit: contain; }
-
-        /* เพิ่มเติมจาก CSS เดิม */
-        .active-pattern {
-            border-color: #8E7D71 !important;
-            box-shadow: 0 0 10px rgba(142, 125, 113, 0.4);
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
-        }
-        
-        #wish-text::-webkit-scrollbar { width: 0px; } /* ซ่อน scrollbar */
-
-    /* ปรับขนาด Post-it สำหรับหน้าจอมือถือ */
-    .post-it-item {
-        width: 120px; /* ขนาดสำหรับมือถือ */
-        height: 120px;
-        background-color: white;
-        border-radius: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        border: 4px solid #F5EBE0;
-        transition: transform 0.2s;
-        text-align: center;
-        padding: 10px;
-        position: relative;
-    }
-
-    @media (min-width: 768px) {
-        .post-it-item {
-            width: 150px; /* ขนาดสำหรับ Tablet/PC */
-            height: 150px;
-        }
-    }
-
-    .post-it-item:active { transform: scale(0.9); }
-
-    /* ปรับลาย Latte Art ให้จางลงในหน้าบอร์ด */
-    .post-it-item img {
-        position: absolute;
-        width: 60%;
-        height: 60%;
-        object-fit: contain;
-        opacity: 0.15;
-        top: 20%;
-    }
-
-    .post-it-item span {
-        position: relative;
-        z-index: 2;
-        font-size: 0.8rem;
-        font-weight: bold;
-        color: #8E7D71;
-        word-break: break-word;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    </style>
-</head>
-<body>
-
-    <button onclick="alert('Credits: Created with Love for Special Someone')" 
-            class="fixed top-4 right-4 z-50 bg-white/80 w-10 h-10 rounded-full shadow-lg">?</button>
-
-    <section id="start-screen" class="screen active">
-        <img src="https://img1.pic.in.th/images/Logo3a79a247763778fe.png" alt="Logo" class="w-64 mb-8 drop-shadow-lg">
-        <div class="flex flex-col">
-            <button class="btn-cafe" onclick="changeScreen('game-screen')">เริ่มเกม</button>
-            <button class="btn-cafe" onclick="changeScreen('board-screen'); loadWishes();">ดูหน้ารวมคำอวยพร</button>
-        </div>
-    </section>
-
-<section id="game-screen" class="screen bg-[#F5EBE0] flex items-center justify-center">
-    <img src="https://webstatic.hoyoverse.com/upload/op-public/2021/03/31/ff800e08532c0bf6fd014e72e5ca81a4_8076081534056378253.png" 
-         class="character hidden md:block opacity-50 pointer-events-none">
-    
-    <div class="bg-[#F2E3D5] p-8 rounded-[40px] shadow-2xl w-[90%] max-w-[450px] flex flex-col items-center border-8 border-white/30">
-        
-        <h2 class="text-[#8E7D71] text-2xl mb-6 font-bold">เลือกลายที่ชอบได้เลย</h2>
-        
-        <div class="grid grid-cols-4 gap-3 mb-8" id="pattern-selector">
-            <div class="w-14 h-14 bg-white rounded-full p-1 cursor-pointer border-2 border-transparent active-pattern" onclick="selectPattern(this, 'heart')">
-                <img src="https://img1.pic.in.th/images/-180_20260401202054.md.png" class="w-full h-full object-contain">
-            </div>
-            <div class="w-14 h-14 bg-white rounded-full p-1 cursor-pointer border-2 border-transparent" onclick="selectPattern(this, 'tulip')">
-                <img src="https://img1.pic.in.th/images/-180_20260401202127.md.png" class="w-full h-full object-contain">
-            </div>
-            <div class="w-14 h-14 bg-white rounded-full p-1 cursor-pointer border-2 border-transparent" onclick="selectPattern(this, 'cat')">
-                <img src="https://img1.pic.in.th/images/-180_20260401202110.md.png" class="w-full h-full object-contain">
-            </div>
-            <div class="w-14 h-14 bg-white rounded-full p-1 cursor-pointer border-2 border-transparent" onclick="selectPattern(this, 'star')">
-                <img src="https://img1.pic.in.th/images/-180_20260401202110.md.png" class="w-full h-full object-contain">
-            </div>
-        </div>
-
-        <div id="main-postit" class="relative w-64 h-64 md:w-80 md:h-80 bg-white rounded-full shadow-inner flex flex-col items-center justify-center p-8 overflow-hidden border-4 border-[#D5BDAF]">
-            <img id="bg-pattern-preview" src="https://img1.pic.in.th/images/-180_20260401202054.md.png" 
-                 class="absolute inset-0 w-full h-full object-contain opacity-20 pointer-events-none scale-110">
-            
-            <input type="text" id="sender-name" placeholder="ชื่อ" 
-                   class="relative z-10 bg-transparent border-b border-[#8E7D71]/30 text-center text-[#8E7D71] placeholder-[#8E7D71]/50 focus:outline-none w-3/4 mb-2 font-bold">
-            
-            <textarea id="wish-text" placeholder="เขียนคำอวยพร" 
-                      class="relative z-10 bg-transparent text-center text-[#8E7D71] placeholder-[#8E7D71]/50 focus:outline-none w-full h-24 resize-none leading-relaxed"></textarea>
-        </div>
-
-        <button onclick="submitWish()" 
-                class="mt-8 bg-[#8E7D71] text-white px-12 py-3 rounded-full text-lg shadow-lg hover:bg-[#766558] transition-all active:scale-95">
-            แปะลงกระดาน
-        </button>
-
-    </div>
-</section>
-
-    <section id="gift-screen" class="screen bg-white">
-        <div class="text-center p-6">
-            <h2 class="text-2xl mb-4">ขอบคุณสำหรับคำอวยพรนะ!</h2>
-            <p class="mb-6">นี่คือของขวัญพิเศษสำหรับคุณ</p>
-            <img src="https://webstatic.hoyoverse.com/upload/op-public/2021/03/31/ff800e08532c0bf6fd014e72e5ca81a4_8076081534056378253.png" class="w-48 mx-auto mb-6">
-            <a href="https://drive.google.com/uc?export=download&id=1i-3rUS9Fc_UNuM1jPZJiWFdpT43HxEd-" 
-               class="btn-cafe bg-yellow-600 text-white" download>Download Wallpaper</a>
-            <button class="block mx-auto mt-4 text-gray-500 underline" onclick="location.reload()">กลับหน้าหลัก</button>
-        </div>
-    </section>
-
-<section id="board-screen" class="screen overflow-hidden flex flex-col p-4">
-    <div class="absolute inset-0 z-0">
-        <img src="https://cache-igetweb-v2.mt108.info/uploads/images-cache/3114/product/1a86c7b4c87a6e23feaf6bfc562e19b0_full.png" 
-             class="w-full h-full object-cover md:object-fill">
-    </div>
-
-    <button class="fixed bottom-6 left-6 z-50 bg-white/90 text-[#8E7D71] px-6 py-2 rounded-full shadow-lg font-bold active:scale-95" 
-            onclick="changeScreen('start-screen')">
-        กลับ
-    </button>
-
-    <div class="relative z-10 w-full h-full overflow-y-auto pt-10 pb-24 px-4">
-        <div id="wish-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8 justify-items-center">
-            </div>
-    </div>
-</section>
-
-    <div id="wish-popup" class="fixed inset-0 bg-black/50 hidden z-[100] flex items-center justify-center p-4" onclick="closePopup()">
-        <div class="bg-white p-10 rounded-full w-80 h-80 flex flex-col items-center justify-center text-center shadow-2xl relative" onclick="event.stopPropagation()">
-            <img id="popup-pattern" src="" class="absolute opacity-10 w-40 h-40">
-            <h3 id="popup-name" class="font-bold text-brown-800 mb-2"></h3>
-            <p id="popup-text" class="text-gray-700"></p>
-        </div>
-    </div>
-
-    <script>
-        let selectedPattern = 'heart';
-        const patterns = {
-            'heart': 'https://img1.pic.in.th/images/-180_20260401202054.md.png',
-            'tulip': 'https://img1.pic.in.th/images/-180_20260401202127.md.png',
-            'cat': 'https://img1.pic.in.th/images/-180_20260401202110.md.png',
-            'star': 'https://img1.pic.in.th/images/-180_20260401202110.md.png'
-        };
-
-        function changeScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function selectPattern(el, pattern) {
-            // ลบ class active จากปุ่มทั้งหมด
-            document.querySelectorAll('#pattern-selector div').forEach(p => p.classList.remove('active-pattern'));
-            // เพิ่ม class active ให้ปุ่มที่กด
-            el.classList.add('active-pattern');
-            
-            selectedPattern = pattern;
-            
-            // เปลี่ยนรูป Preview พื้นหลังในวงกลมเขียนข้อความ
-            const previewImg = document.getElementById('bg-pattern-preview');
-            previewImg.src = patterns[pattern];
-        }
-
-        // ส่วนของการส่งข้อมูลไป Firebase
-        async function submitWish() {
-            const name = document.getElementById('sender-name').value;
-            const text = document.getElementById('wish-text').value;
-
-            if(!name || !text) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-
-            const data = { name, text, pattern: selectedPattern, date: new Date().toISOString() };
-
-            try {
-                // ส่งไปยัง Firebase Realtime Database
-                await fetch('https://project-test01-49383-default-rtdb.firebaseio.com/wishes.json', {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
-                changeScreen('gift-screen');
-            } catch (error) {
-                alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
-            }
-        }
-
-        // ปรับฟังก์ชัน loadWishes เพื่อสร้าง Element ตามโครงสร้างใหม่
-        async function loadWishes() {
-            const container = document.getElementById('wish-container');
-            container.innerHTML = '<p class="text-white col-span-full text-center">กำลังเปิดคาเฟ่...</p>';
-            
-            try {
-                const res = await fetch('https://project-test01-49383-default-rtdb.firebaseio.com/wishes.json');
-                const data = await res.json();
-                
-                container.innerHTML = '';
-                if(!data) {
-                    container.innerHTML = '<p class="text-white col-span-full">ยังไม่มีคำอวยพรเลย</p>';
-                    return;
-                }
-
-                for(let id in data) {
-                    const wish = data[id];
-                    const item = document.createElement('div');
-                    item.className = "post-it-item";
-                    
-                    item.innerHTML = `
-                        <img src="${patterns[wish.pattern] || patterns['heart']}">
-                        <span>${wish.name}</span>
-                    `;
-                    
-                    item.onclick = () => openWish(wish);
-                    container.appendChild(item);
-                }
-            } catch (e) {
-                container.innerHTML = '<p class="text-white col-span-full">โหลดข้อมูลไม่สำเร็จ</p>';
-            }
-        }
-
-        function openWish(wish) {
-            document.getElementById('popup-name').innerText = "จาก: " + wish.name;
-            document.getElementById('popup-text').innerText = wish.text;
-            document.getElementById('popup-pattern').src = patterns[wish.pattern];
-            document.getElementById('wish-popup').classList.remove('hidden');
-        }
-
-        function closePopup() {
-            document.getElementById('wish-popup').classList.add('hidden');
-        }
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gentle Steam, Dearly Belov'd</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400&family=Pattaya&display=swap" rel="stylesheet">
     
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Mitr', sans-serif;
+            font-family: 'Fahkwang', sans-serif;
         }
 
         body, html {
             height: 100%;
             overflow: hidden; /* ป้องกันการเลื่อนหน้าจอ */
+            background-color: #f6e6dc; /* สีพื้นหลังสำรอง */
         }
 
         /* พื้นหลังหลักของเกม */
@@ -342,11 +32,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* จัดทุกอย่างให้อยู่ตรงกลาง */
             position: relative;
+            padding: 20px;
         }
 
-        /* ปุ่มเครื่องหมายคำถาม (?) มุมขวาบน */
+        /* --- ปรับปรุงปุ่มเครดิตมุมขวาบน --- */
         .credit-btn {
             position: absolute;
             top: 20px;
@@ -362,85 +53,91 @@
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            z-index: 10;
+            z-index: 20; /* ให้อยู่เหนือโลโก้ */
         }
 
         .credit-btn:hover {
             background-color: #fff;
-            transform: scale(1.1) rotate(10deg);
+            transform: scale(1.1);
         }
 
-        /* ส่วนของโลโก้ */
+        /* --- ปรับปรุงส่วนของโลโก้ (ขยายขนาด) --- */
         .logo-container {
-            margin-bottom: 40px;
-            width: 90%;
-            max-width: 700px;
-            animation: float 3s ease-in-out infinite;
+            width: 100%; /* ใช้ความกว้างเต็มที่ */
+            max-width: 1000px; /* ขยายขีดจำกัดความกว้างสูงสุดให้ใหญ่ขึ้นมาก */
+            margin-bottom: 20px; /* ลดระยะห่างด้านล่าง */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: float 4s ease-in-out infinite; /* ปรับแอนิเมชันให้ช้าลงเล็กน้อย */
+            z-index: 10;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
         }
 
         .logo {
-            width: 100%;
-            height: auto;
-            /* เพิ่มเงาจางๆ ให้โลโก้อ่านง่ายขึ้น */
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+            width: 100%; /* ให้โลโก้ขยายเต็มพื้นที่ logo-container */
+            height: auto; /* รักษาสัดส่วน */
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18)); /* เพิ่มเงาให้ดูมีมิติขึ้น */
         }
 
-        /* กลุ่มปุ่มเมนูตรงกลาง */
+        /* --- กลุ่มปุ่มเมนูตรงกลาง --- */
         .menu-buttons {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            width: 240px;
+            gap: 15px; /* ลดระยะห่าง */
+            width: 220px; /* ปรับความกว้างเล็กน้อย */
+            z-index: 15; /* ให้อยู่เหนือโลโก้ส่วนล่าง */
         }
 
         .btn {
-            padding: 14px 20px;
+            padding: 12px 20px;
             border: none;
             border-radius: 30px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 500;
             letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
             text-align: center;
             color: white;
+            text-decoration: none; /* สำหรับใช้กับ <a> tag */
+            display: inline-block;
         }
 
-        /* สีปุ่ม START ตามโทนรูปที่ 1 */
+        /* สีปุ่ม START */
         .btn-start {
             background-color: #b18e77; 
         }
 
         .btn-start:hover {
             background-color: #9c7862;
-            transform: scale(1.05);
+            transform: translateY(-2px);
         }
 
-        /* สีปุ่ม Wishboard ตามโทนรูปที่ 1 */
+        /* สีปุ่ม Wishboard */
         .btn-wishboard {
             background-color: #ccb9ad;
         }
 
         .btn-wishboard:hover {
             background-color: #bca89a;
-            transform: scale(1.05);
+            transform: translateY(-2px);
         }
 
-        /* หน้าต่าง Credit (Pop-up) */
+        /* ---  หน้าต่างredit (Pop-up) --- */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(121, 92, 72, 0.2); /* ฟิลเตอร์สีน้ำตาลอ่อนๆ */
-            backdrop-filter: blur(4px); /* เพิ่มความเบลอให้พื้นหลัง */
+            background: rgba(121, 92, 72, 0.3); /* สีน้ำตาลใส */
+            backdrop-filter: blur(5px); /* เบลอพื้นหลัง */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -456,10 +153,11 @@
         }
 
         .credit-card {
-            background-color: #efe0d4; /* สีครีมนวลตามรูปที่ 2 */
+            background-color: #efe0d4;
             padding: 50px 30px;
             border-radius: 25px;
-            width: 380px;
+            width: 90%;
+            max-width: 380px;
             text-align: center;
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             color: #7a5c48;
@@ -472,7 +170,7 @@
         }
 
         .credit-card h2 {
-            font-family: 'Pattaya', sans-serif; /* ใช้ฟอนต์หัวข้อที่ดูเก๋ๆ */
+            font-family: 'Fahkwang', sans-serif;
             margin-bottom: 25px;
             font-size: 2.5rem;
             font-weight: normal;
@@ -485,13 +183,13 @@
         }
 
         .close-btn {
-            background-color: transparent;
+            background-color: #7a5c48;
             border: 1.5px solid #7a5c48;
             padding: 8px 25px;
             border-radius: 12px;
             cursor: pointer;
-            color: #7a5c48;
-            font-weight: bold;
+            color: #efe0d4;
+            font-weight: 500;
             transition: 0.3s;
         }
 
@@ -499,15 +197,29 @@
             background-color: #7a5c48;
             color: white;
         }
+
+        /* การปรับแต่งสำหรับหน้าจอขนาดเล็ก (Mobile) */
+        @media (max-width: 600px) {
+            .logo-container {
+                max-width: 90%; /* ให้โลโก้เล็กลงหน่อยบนมือถือ */
+            }
+            .menu-buttons {
+                width: 180px;
+            }
+            .btn {
+                font-size: 1rem;
+                padding: 10px 15px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="game-container">
-        <button class="credit-btn" onclick="toggleCredit()">?</button>
+        <button class="credit-btn" onclick="toggleCredit()" title="ดูเครดิต">?</button>
 
         <div class="logo-container">
-            <img src="https://img2.pic.in.th/1106a0e33c6ac32ce3.md.png" alt="Game Logo" class="logo">
+            <img src="https://img2.pic.in.th/-181_20260411152816.md.png" alt="Game Logo" class="logo">
         </div>
 
         <div class="menu-buttons">
@@ -517,11 +229,12 @@
 
         <div id="creditOverlay" class="overlay" onclick="closeOverlay(event)">
             <div class="credit-card">
-                <h2>Credit</h2>
+                <h2>Special Thanks</h2>
                 <div class="credit-content">
-                    <p><b>Producer:</b> Your Name</p>
-                    <p><b>Artist:</b> Artist Name</p>
-                    <p><b>Programmer:</b> Gemini AI</p>
+                    <p><b>Head Project:</b> Your Name</p>
+                    <p><b>Character Artist:</b> Artist Name</p>
+                    <p><b>Background Artist:</b> Artist Name</p>
+                    <p><b>Developer:</b> Your Name</p>
                     <p><b>Music:</b> Lo-fi Coffee Shop</p>
                 </div>
                 <button class="close-btn" onclick="toggleCredit()">Close</button>
