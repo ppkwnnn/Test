@@ -211,6 +211,102 @@
                 padding: 10px 15px;
             }
         }
+
+        body {
+            font-family: 'Fahkwang', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* พื้นหลังฉาก */
+        .scene-container {
+            width: 100%;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 40px;
+        }
+
+        /* กล่องข้อความหลัก */
+        .text-box {
+            width: 80%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.8); /* โปร่งใส 80% */
+            border-radius: 15px;
+            padding: 25px;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* ตัวหนังสือสี #7a5c48 และเงา */
+        .text-content {
+            color: #7a5c48;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8), 0px 0px 1px rgba(0,0,0,0.1);
+        }
+
+        /* Name Tag สำหรับฉากพูดคุย */
+        .name-tag {
+            background-color: #7a5c48;
+            color: #f6e6dc;
+            padding: 5px 20px;
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+            top: -35px;
+            left: 20px;
+            font-weight: 700;
+        }
+
+        /* ตัวละคร */
+        .character-sprite {
+            position: absolute;
+            bottom: 120px; /* ให้อยู่เหนือกล่องข้อความ */
+            max-height: 70vh;
+            z-index: 1;
+        }
+
+        /* ระบบ Choice (ตัวเลือก) */
+        .choices-container {
+            display: flex;
+            flex-direction: column; /* พื้นฐานเป็นแนวตั้ง */
+            gap: 15px;
+            width: 80%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        /* ถ้าตัวเลือก > 3 จะสลับเป็นแนวนอน (Grid 2 คอลัมน์) ด้วย Class .grid-layout */
+        .choices-container.grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .choice-button {
+            background: rgba(255, 255, 255, 0.8);
+            color: #7a5c48;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            border: 2px solid transparent;
+            transition: 0.3s;
+            cursor: pointer;
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .choice-button:hover {
+            background: rgba(122, 92, 72, 0.9);
+            color: #f6e6dc;
+        }
     </style>
 </head>
 <body>
@@ -258,4 +354,3 @@
     </script>
 </body>
 </html>
-
