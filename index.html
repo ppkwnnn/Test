@@ -211,102 +211,6 @@
                 padding: 10px 15px;
             }
         }
-
-        body {
-            font-family: 'Fahkwang', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* พื้นหลังฉาก */
-        .scene-container {
-            width: 100%;
-            height: 100vh;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            padding-bottom: 40px;
-        }
-
-        /* กล่องข้อความหลัก */
-        .text-box {
-            width: 80%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.8); /* โปร่งใส 80% */
-            border-radius: 15px;
-            padding: 25px;
-            box-sizing: border-box;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        /* ตัวหนังสือสี #7a5c48 และเงา */
-        .text-content {
-            color: #7a5c48;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            font-weight: 500;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8), 0px 0px 1px rgba(0,0,0,0.1);
-        }
-
-        /* Name Tag สำหรับฉากพูดคุย */
-        .name-tag {
-            background-color: #7a5c48;
-            color: #f6e6dc;
-            padding: 5px 20px;
-            border-radius: 10px 10px 0 0;
-            position: absolute;
-            top: -35px;
-            left: 20px;
-            font-weight: 700;
-        }
-
-        /* ตัวละคร */
-        .character-sprite {
-            position: absolute;
-            bottom: 120px; /* ให้อยู่เหนือกล่องข้อความ */
-            max-height: 70vh;
-            z-index: 1;
-        }
-
-        /* ระบบ Choice (ตัวเลือก) */
-        .choices-container {
-            display: flex;
-            flex-direction: column; /* พื้นฐานเป็นแนวตั้ง */
-            gap: 15px;
-            width: 80%;
-            max-width: 800px;
-            margin-bottom: 20px;
-        }
-
-        /* ถ้าตัวเลือก > 3 จะสลับเป็นแนวนอน (Grid 2 คอลัมน์) ด้วย Class .grid-layout */
-        .choices-container.grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .choice-button {
-            background: rgba(255, 255, 255, 0.8);
-            color: #7a5c48;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 700;
-            border: 2px solid transparent;
-            transition: 0.3s;
-            cursor: pointer;
-            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
-        }
-
-        .choice-button:hover {
-            background: rgba(122, 92, 72, 0.9);
-            color: #f6e6dc;
-        }
     </style>
 </head>
 <body>
@@ -319,7 +223,7 @@
         </div>
 
         <div class="menu-buttons">
-            <button class="btn btn-start" onclick="updateScene('scene1')">START</button>
+            <button class="btn btn-start" onclick="alert('Starting Game...')">START</button>
             <button class="btn btn-wishboard" onclick="alert('Opening Wishboard...')">Wishboard</button>
         </div>
 
@@ -338,103 +242,7 @@
         </div>
     </div>
 
-    <div id="game-screen">
-        <div id="choice-container"></div>
-        
-        <div id="text-box-container">
-            <div id="name-tag" class="hidden"></div>
-            <div id="content-box">
-                <p id="main-text" class="story-text"></p>
-            </div>
-        </div>
-    </div>
-
     <script>
-        const story = {
-            scene1: {
-                bg: "https://img2.pic.in.th/IMG_7826.md.jpeg",
-                narrative: "หลังจากผ่านมรสุมความเหนื่อยล้ามาทั้งสัปดาห์ ในที่สุดวันหยุดที่เฝ้าฝันถึงเสียที คุณไม่อยากปล่อยให้เวลาอันมีค่านี้หมดไปกับการนอนซึมอยู่บนเตียง จึงตัดสินใจก้าวเท้าออกจากบ้านเพื่อสูดอากาศบริสุทธิ์ แสงแดดอ่อน ๆ ยามเช้าชวนให้รู้สึกดีไม่น้อย แต่สิ่งเดียวที่ขาดไปในตอนนี้คือเครื่องดื่มดี ๆ สักแก้วที่จะมาเติมเต็มในวันหยุดของคุณ",
-                speaker: null,
-                choices: [{ text: "เดินต่อไป...", next: "scene2" }]
-            },
-            scene2: {
-                bg: "https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg",
-                narrative: "คุณเดินผ่านย่านการค้าที่คึกคัก จนกระทั่งขาของคุณหยุดชะงักลงที่หน้าร้านกาแฟเล็ก ๆ ร้านหนึ่ง มันดูเรียบง่าย แต่กลับให้ความรู้สึกอบอุ่นอย่างบอกไม่ถูก กลิ่นหอมจาง ๆ ของเมล็ดกาแฟที่ลอยมาแตะจมูก ชวนให้คุณนึกถึงความทรงจำเก่า ๆ ยืนมองอยู่หน้าร้านอยู่สักพักกำลังตัดสินใจว่าจะเข้าไปดีไหม",
-                speaker: "Y",
-                dialogue: "อืมจะลองเข้าไปดีมั้ยนะ ?",
-                choices: [
-                    { text: "A: เข้าไปในร้าน", next: "scene3" },
-                    { text: "B: ไม่เข้าไป", next: "home" }
-                ]
-            },
-            scene3: {
-                bg: "https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg",
-                narrative: "ทันทีที่คุณผลักประตูเข้าไป เสียงกระดิ่งทองเหลืองเหนือหัวก็ดัง 'กรุ๊งกริ๊ง' ต้อนรับอย่างสดใส กลิ่นกาแฟคั่วบดโอบล้อมตัวคุณไว้ราวกับกำลังปลอบประโลม",
-                speaker: "Y",
-                dialogue: "บรรยากาศในร้านดีจัง... จะนั่งตรงไหนดีนะ?",
-                choices: [
-                    { text: "A: นั่งตรงเคาน์เตอร์ไม้", next: "end" },
-                    { text: "B: นั่งริมหน้าต่าง", next: "end" },
-                    { text: "C: นั่งมุมในสุดของร้าน", next: "end" },
-                    { text: "D: กลับออกไปก่อน", next: "scene2" }
-                ]
-            },
-            home: { 
-                bg: "https://img2.pic.in.th/IMG_7826.md.jpeg", 
-                narrative: "คุณเลือกเดินจากไป... แต่วันหยุดนี้ยังอีกยาวไกล", 
-                speaker: null, 
-                choices: [{ text: "เริ่มใหม่", next: "scene1" }] 
-            },
-            end: { 
-                bg: "https://img2.pic.in.th/IMG_7825a630c755af16e393.md.jpeg", 
-                narrative: "คุณได้ที่นั่งที่ถูกใจแล้ว เรื่องราวบทต่อไปกำลังจะเริ่มต้นขึ้น...", 
-                speaker: null, 
-                choices: [{ text: "จบการสาธิต (เริ่มใหม่)", next: "scene1" }] 
-            }
-        };
-
-        function updateScene(sceneKey) {
-            const scene = story[sceneKey];
-            const screen = document.getElementById('game-screen');
-            const nameTag = document.getElementById('name-tag');
-            const mainText = document.getElementById('main-text');
-            const choiceContainer = document.getElementById('choice-container');
-
-            // เปลี่ยนภาพพื้นหลัง
-            screen.style.backgroundImage = `url('${scene.bg}')`;
-
-            // จัดการ Name Tag
-            if (scene.speaker) {
-                nameTag.innerText = scene.speaker;
-                nameTag.classList.remove('hidden');
-                mainText.innerHTML = `<strong>${scene.dialogue}</strong><br><small style="opacity:0.8">${scene.narrative}</small>`;
-                document.getElementById('content-box').style.borderRadius = "0 15px 15px 15px";
-            } else {
-                nameTag.classList.add('hidden');
-                mainText.innerText = scene.narrative;
-                document.getElementById('content-box').style.borderRadius = "15px";
-            }
-
-            // จัดการ Choices
-            choiceContainer.innerHTML = '';
-            if (scene.choices.length > 3) {
-                choiceContainer.classList.add('grid-layout');
-            } else {
-                choiceContainer.classList.remove('grid-layout');
-            }
-
-            scene.choices.forEach(c => {
-                const btn = document.createElement('div');
-                btn.className = 'choice-btn';
-                btn.innerText = c.text;
-                btn.onclick = () => updateScene(c.next);
-                choiceContainer.appendChild(btn);
-            });
-        }
-
-        // เริ่มต้น
-        updateScene('scene1');
-
         // ฟังก์ชัน เปิด-ปิด หน้า Credit
         function toggleCredit() {
             const overlay = document.getElementById('creditOverlay');
