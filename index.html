@@ -317,7 +317,25 @@
             <button class="btn btn-start" onclick="alert('Starting Game...')">START</button>
             <button class="btn btn-wishboard" onclick="alert('Opening Wishboard...')">Wishboard</button>
         </div>
+<div id="game-scene" class="hidden absolute inset-0 w-full h-full z-30">
+    <div id="bg-layer" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('https://img2.pic.in.th/IMG_7830564ed53c7a0bceb1.md.jpeg');"></div>
 
+    <div id="character-layer" class="absolute bottom-0 left-1/2 -translate-x-1/2 h-[90%] pointer-events-none z-10 transition-all duration-500">
+        <img src="https://img2.pic.in.th/-182_20260411164509.md.png" class="h-full object-contain">
+    </div>
+
+    <div id="choice-container" class="hidden absolute top-[40%] left-1/2 -translate-x-1/2 flex flex-col gap-4 z-50">
+        </div>
+
+    <div id="ui-layer" class="absolute bottom-10 w-full flex flex-col items-center z-40">
+        <div id="name-box" class="bg-[#B49682] text-white px-8 py-2 rounded-t-2xl self-start ml-[7.5%] font-bold shadow-md">
+            ชื่อตัวละคร
+        </div>
+        <div id="dialogue-box" class="bg-white/90 w-[85%] h-36 rounded-[25px] p-6 cursor-pointer shadow-lg border border-white/50">
+            <p id="text-content" class="text-[#7a5c48] text-lg leading-relaxed">...</p>
+        </div>
+    </div>
+</div>
         <div id="creditOverlay" class="overlay" onclick="closeOverlay(event)">
             <div class="credit-card">
                 <h2>Special Thanks</h2>
