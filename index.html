@@ -210,97 +210,6 @@
                 font-size: 1rem;
                 padding: 10px 15px;
             }
-        #game-container {
-                position: relative;
-                width: 100vw;
-                height: 100vh;
-                overflow: hidden;
-                font-family: 'Kanit', sans-serif;
-}
-
-#bg-layer {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                 background-size: cover;
-                background-position: center;
-                z-index: 1;
-}
-
-#character-layer {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 90%; /* ปรับขนาดตัวละคร */
-    z-index: 2;
-    pointer-events: none;
-}
-
-#character-img {
-    height: 100%;
-    object-fit: contain;
-}
-
-/* กล่องคำพูด (Dialogue Box) */
-#ui-layer {
-    position: absolute;
-    bottom: 30px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 10;
-}
-
-#name-box {
-    background: #B49682; /* สีน้ำตาลนวลตามตัวอย่าง */
-    color: white;
-    padding: 8px 30px;
-    border-radius: 20px 20px 0 0;
-    align-self: flex-start;
-    margin-left: 10%;
-    font-weight: bold;
-}
-
-#dialogue-box {
-    background: rgba(255, 255, 255, 0.85); /* ขาวโปร่งแสง */
-    width: 85%;
-    height: 150px;
-    border-radius: 25px;
-    padding: 20px 40px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    cursor: pointer;
-}
-
-/* ปุ่มตัวเลือก */
-#choice-container {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 20;
-}
-
-.choice-btn {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 15px 60px;
-    border-radius: 50px;
-    border: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.choice-btn:hover {
-    background: #B49682;
-    color: white;
-}
-
-.hidden { display: none; }
         }
     </style>
 </head>
@@ -318,6 +227,26 @@
             <button class="btn btn-wishboard" onclick="alert('Opening Wishboard...')">Wishboard</button>
         </div>
 
+        <div id="game-scene" class="hidden absolute inset-0 w-full h-full z-30">
+    <div id="bg-layer" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('https://img2.pic.in.th/IMG_7830564ed53c7a0bceb1.md.jpeg');"></div>
+
+    <div id="character-layer" class="absolute bottom-0 left-1/2 -translate-x-1/2 h-[90%] pointer-events-none z-10 transition-all duration-500">
+        <img src="https://img2.pic.in.th/-182_20260411164509.md.png" class="h-full object-contain">
+    </div>
+
+    <div id="choice-container" class="hidden absolute top-[40%] left-1/2 -translate-x-1/2 flex flex-col gap-4 z-50">
+        </div>
+
+    <div id="ui-layer" class="absolute bottom-10 w-full flex flex-col items-center z-40">
+        <div id="name-box" class="bg-[#B49682] text-white px-8 py-2 rounded-t-2xl self-start ml-[7.5%] font-bold shadow-md">
+            ชื่อตัวละคร
+        </div>
+        <div id="dialogue-box" class="bg-white/90 w-[85%] h-36 rounded-[25px] p-6 cursor-pointer shadow-lg border border-white/50">
+            <p id="text-content" class="text-[#7a5c48] text-lg leading-relaxed">...</p>
+        </div>
+    </div>
+</div>
+
         <div id="creditOverlay" class="overlay" onclick="closeOverlay(event)">
             <div class="credit-card">
                 <h2>Special Thanks</h2>
@@ -330,20 +259,6 @@
                 </div>
                 <button class="close-btn" onclick="toggleCredit()">Close</button>
             </div>
-    <div id="bg-layer" style="background-image: url('https://img2.pic.in.th/IMG_7830564ed53c7a0bceb1.md.jpeg');"></div>
-
-    <div id="character-layer">
-        <img src="https://img2.pic.in.th/-182_20260411164509.md.png" id="character-img" class="fade-in">
-    </div>
-
-    <div id="choice-container" class="hidden"></div>
-
-    <div id="ui-layer">
-        <div id="name-box">ชื่อตัวละคร</div>
-        <div id="dialogue-box">
-            <p id="text-content">คลิกเพื่อเริ่มเนื้อเรื่อง...</p>
-        </div>
-    </div>
         </div>
     </div>
 
